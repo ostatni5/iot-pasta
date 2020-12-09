@@ -1,6 +1,6 @@
 import threading
 from time import sleep
-from util import pastaData, parse_control, subscribe_setup
+from utilities.util import parse_control, subscribe_setup
 
 import paho.mqtt.client as mqtt
 

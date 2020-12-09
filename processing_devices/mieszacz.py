@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
-import time, random
-from util import pastaData
+import time
+from utilities.util import pastaData
 
 def getPressure():
     return 2
