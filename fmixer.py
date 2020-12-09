@@ -18,8 +18,6 @@ pygame.init()
 
 ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-is_on = False
-
 
 def getTemperature():
     return 90
