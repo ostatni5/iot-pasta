@@ -1,11 +1,14 @@
+START python orderer.py
+
+START python processing_devices/mieszacz_wstepny.py
+REM START python processing_devices/wyparzacz.py
+REM START python processing_devices/mieszacz.py
+REM START python transferring_devices/wyciag_rurowy.py
+REM START python processing_devices/suszarka.py
+REM START python transferring_devices/tasma.py
+REM START python transferring_devices/wyciag_kopalniany.py
+REM START python transferring_devices/wagi.py
+REM START python processing_devices/chlodziarka.py
+REM START python transferring_devices/silos.py
+
 START python logger.py
-START python mieszacz_wstepny.py
-#START python wyparzacz.py
-#START python mieszacz.py
-#START python wyciag_rurowy.py
-#START python suszarka.py
-#START python tasma.py
-#START python wyciag_kopalniany.py
-#START python waga.py
-#START python chlodziarka.py
-#START python silos.py
