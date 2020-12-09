@@ -1,4 +1,18 @@
+from ui.view import View
+import os
 import paho.mqtt.client as mqtt
+import pygame
+
+SCREEN_X = 20+ 300*1
+SCREEN_Y = 30
+SCREEN_WIDTH = 300
+SCREEN_HEIGHT = 300
+NAME = "Orderer"
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+
+pygame.init()
+
+ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 is_on = False
 
@@ -48,4 +62,28 @@ mqttc.will_set("pasta/log", "mieszacz wstepny dokonal zywota", 0, True)
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": "AAA",
+        "progres": "0%",
+        "status": str(is_on),
+        "sensors": [["CCC", "DDD"]],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+
+pygame.quit()

@@ -1,10 +1,22 @@
-import threading
+import threading,os
+from ui.view import View
+import pygame
 from time import sleep
-from util import pastaData, parse_control, subscribe_setup
+from utilities.util import parse_control, subscribe_setup
 
 import paho.mqtt.client as mqtt
 
-DEVICE_NAME = "wyparzacz"
+SCREEN_X = 20+ 300*2
+SCREEN_Y = 30
+SCREEN_WIDTH = 300
+SCREEN_HEIGHT = 300
+NAME = "wyparzacz"
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+
+pygame.init()
+
+ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
+
 is_on = False
 running = False
 job = None
@@ -49,7 +61,7 @@ def make_order(payload, mqttc):
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    subscribe_setup(mqttc, DEVICE_NAME)
+    subscribe_setup(mqttc, NAME)
 
 def on_message(client, userdata, msg):
     global running, is_on
@@ -58,7 +70,7 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
     # check topics and do something
     if topics[-1] == "control":
-        parse_control(payload, mqttc, DEVICE_NAME, is_on)
+        parse_control(payload, mqttc, NAME, is_on)
     elif topics[1] == "data":
         if is_on and not running:
             make_order(payload, mqttc)
@@ -71,4 +83,28 @@ mqttc.will_set("pasta/log", "kontroler wyparzacza dokonal zywota", 0, True)
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(job),
+        "progres": "0%",
+        "status": str(is_on),
+        "sensors": [["Temp[C]", str(temperature)]],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+
+pygame.quit()
