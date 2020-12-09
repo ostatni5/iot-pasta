@@ -1,0 +1,11 @@
+START python logger.py
+START python mieszacz_wstepny.py
+#START python wyparzacz.py
+#START python mieszacz.py
+#START python wyciag_rurowy.py
+#START python suszarka.py
+#START python tasma.py
+#START python wyciag_kopalniany.py
+#START python waga.py
+#START python chlodziarka.py
+#START python silos.py
