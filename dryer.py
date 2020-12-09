@@ -49,7 +49,7 @@ class Pipeline:
         }
 
         json_part = dict_to_jsonstr(part)
-        mqttc.publish('pasta/data/dryer', json_part, 0, False)
+        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
 
 
 
