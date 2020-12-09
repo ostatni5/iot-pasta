@@ -1,8 +1,10 @@
 import threading
 from time import sleep
+from util import pastaData, parse_control, subscribe_setup
 
 import paho.mqtt.client as mqtt
 
+DEVICE_NAME = "wyparzacz"
 is_on = False
 running = False
 job = None
@@ -47,22 +49,7 @@ def make_order(payload, mqttc):
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    # start subscribing to topics
-    # example mqttc.subscribe("topic/topic/topic")
-    mqttc.publish("pasta/log", "kontroler wyparzacza ozyl", 0, True)
-    mqttc.subscribe("pasta/wyparzacz/control")
-    mqttc.subscribe("pasta/data/wyparzacz")
-    # end subscribing to topics
-
-
-def parse_control(payload, mqttc):
-    global is_on
-    if payload == "on" and not is_on:
-        is_on = True
-    elif payload == "off" and is_on:
-        is_on = False
-    mqttc.publish("pasta/log", f'wyparzacz is {payload}', 0, True)
-
+    subscribe_setup(mqttc, DEVICE_NAME)
 
 def on_message(client, userdata, msg):
     global running, is_on
@@ -71,7 +58,7 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
     # check topics and do something
     if topics[-1] == "control":
-        parse_control(payload, mqttc)
+        parse_control(payload, mqttc, DEVICE_NAME, is_on)
     elif topics[1] == "data":
         if is_on and not running:
             make_order(payload, mqttc)
