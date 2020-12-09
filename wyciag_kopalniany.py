@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import time, random
 
 class Lift:
-    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartCapacity=100):
+    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
         self.maxDuration = maxDuration
         self.minDuration = minDuration
         self.numberOfCarts = numberOfCarts
@@ -67,8 +67,8 @@ mqttc.loop_start()
 while True:
     print(Lift.duration)
     
-    # Lift.move()
-    # Lift.add(random.randint(0,33))
-    # print(Lift.array)
-    # Lift.alterDuration()
+    Lift.move()
+    Lift.add(random.randint(0,33))
+    print(Lift.array)
+    Lift.alterDuration()
 
