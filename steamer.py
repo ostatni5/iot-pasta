@@ -2,7 +2,7 @@ import threading,os
 from ui.view import View
 import pygame
 from time import sleep
-from utilities.util import parse_control, subscribe_setup
+from utilities.util import *
 
 import paho.mqtt.client as mqtt
 
