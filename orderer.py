@@ -18,7 +18,7 @@ def on_message(client, userdata, msg):
     # end checking topics
 
 
-mqttc = mqtt.Client("projekt_AC_orderer")
+mqttc = mqtt.Client()
 mqttc.will_set("pasta/log", "orderder dokonal zywota", 0, True)
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect

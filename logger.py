@@ -18,7 +18,7 @@ def on_message(client, userdata, msg):
     # end checking topics
 
 
-mqttc = mqtt.Client("projekt_AC_logger")
+mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")

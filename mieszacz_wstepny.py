@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 def make_order(payload, mqttc):
     # we o poiwedz jaki to makaron
     mqttc.publish('pasta/log', "mieszacz wstepny zrobil makaron", 0, True)
-    mqttc.publish('pasta/product/wyparzacz/order', "dane wysylamy", 0, False)
+    mqttc.publish('pasta/product/wyparzacz/order', "makaron z mieszacza wstepnego", 0, False)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -27,7 +27,7 @@ def on_message(client, userdata, msg):
     # end checking topics
 
 
-mqttc = mqtt.Client("projekt_AC_mieszacz wstepny")
+mqttc = mqtt.Client()
 mqttc.will_set("pasta/log", "mieszacz wstepny dokonal zywota", 0, True)
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
