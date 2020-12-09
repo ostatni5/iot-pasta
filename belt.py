@@ -8,6 +8,7 @@ class Belt:
         self.size = size
         self.duration = duration
         self.array = [None for i in range(0,self.size)]
+        self.name = "belt"
 
     def alterDuration(self, newDuration=None):
         if(newDuration == None):

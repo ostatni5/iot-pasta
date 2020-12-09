@@ -20,10 +20,10 @@ class Mixer:
         self.mix_time = mix_time
         self.maxPressure = maxPressure
         self.maxTemperature = maxTemperature
-
         self.is_on = False
         self.running = False
-        self.device = "mixer"
+        self.name = "mixer"
+        self.progress = 0
 
     def add(self, product):
         if self.volume == 0:
@@ -35,11 +35,11 @@ class Mixer:
 
     def mix(self):
         stopped = False
-        i = 100
-        while i > 0 and not stopped:
-            time.sleep(self.mix_time / i)
+        self.progress = 0
+        while self.progress < 100 and not stopped:
+            time.sleep(self.mix_time / 100)
             stopped = self.check_temp() or self.check_pressure()
-            i -= 1
+            self.progress += 1
         if stopped:
             mqttc.publish('pasta/log', "produkcja zatrzymana na mieszaczu", 0, False)
             print("mieszacz wylaczony")
@@ -49,7 +49,7 @@ class Mixer:
 
     def forward(self):
         mqttc.publish('pasta/log', "mieszacz zmieszał", 0, True)
-        mqttc.publish('pasta/product/pipeline', "dane wysylamy", 0, False)
+        mqttc.publish('pasta/data/pipeline', "dane wysylamy", 0, False)
         print("mieszacz zmieszał")
         self.volume = 0
 
@@ -79,7 +79,7 @@ mixer = Mixer()
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    subscribe_setup(mqttc, mixer.device)
+    subscribe_setup(mqttc, mixer.name)
 
 
 def on_message(client, userdata, msg):
@@ -87,7 +87,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, mixer.device, mixer.is_on)
+        parse_control(payload, mqttc, mixer.name, mixer.is_on)
     elif topics[1] == "data":
         if mixer.is_on and not mixer.running:
             mixer.add(jsonstr_to_obj(payload))
@@ -98,7 +98,4 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_start()
-
-while True:
-    time.sleep(1)
+mqttc.loop_forever()

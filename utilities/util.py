@@ -76,5 +76,13 @@ def subscribe_setup(mqttc, device):
     mqttc.subscribe(f'pasta/{device}e/control')
     mqttc.subscribe(f'pasta/data/{device}')
 
+
+
 def jsonstr_to_obj(json):
     return json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
+
+def obj_to_jsonstr(obj):
+    return json.dumps(obj.__dict__)
+
+def dict_to_jsonstr(dictionary):
+    json.dumps(dictionary)

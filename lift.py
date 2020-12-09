@@ -8,6 +8,7 @@ class Lift:
         self.numberOfCarts = numberOfCarts
         self.duration = duration
         self.array = [None for i in range(0,self.numberOfCarts)]
+        self.name = "lift"
 
     def alterDuration(self, newDuration=None):
         if(newDuration == None):
