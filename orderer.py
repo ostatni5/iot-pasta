@@ -1,7 +1,11 @@
 from ui import UI
 import paho.mqtt.client as mqtt
-
 import pygame
+
+x = 100
+y = 100
+import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
 
 pygame.init()
 
@@ -51,12 +55,13 @@ while running:
 
     state={
         "processing":"AAAA",
+        "progres":"0%",
         "status":"BBB",
         "sensors":[["CCC","DDD"]],
     }
 
     ui.render(state)
-    clock.tick(20)
+    clock.tick(10)
 
 
 pygame.quit()

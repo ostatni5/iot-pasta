@@ -20,42 +20,46 @@ class UI:
         processing = state.get("processing", "---")
         status = state.get("status", "---")
         sensors = state.get("sensors", [["---","---"]])
+        progres = state.get("progres", "0%")
 
         self.screen.fill(self.color_bg)
 
         line_pos = self.padding_left
-        self.printText(self.name, self.color_bg2, self.padding_left, 0)
-        line_pos = self.font_size
 
-        self.printText("Status:", self.color_bg2,
+        self.print_text(self.name, self.color_bg2, self.padding_left, line_pos)
+        line_pos += self.font_size
+
+        self.print_text("Status:", self.color_bg2,
                        self.padding_left, line_pos, self.font_small)
-        self.printText(status, self.player, self.padding_left +
+        self.print_text(status, self.player, self.padding_left +
                        200, line_pos, self.font_small)
         line_pos += self.small_font_size
 
-        self.printText("Processing:", self.color_bg2,
+        self.print_text("Processing:", self.color_bg2,
                        self.padding_left, line_pos, self.font_small)
+        self.print_text(progres, self.rock, self.padding_left +
+                       200, line_pos, self.font_small)
         line_pos += self.small_font_size
 
-        self.printText(processing, self.rock, self.padding_left,
+        self.print_text(processing, self.rock, self.padding_left,
                        line_pos, self.font_small)
         line_pos += self.small_font_size + self.small_font_size/3
 
-        self.printText("Sensors:", self.color_bg2,
+        self.print_text("Sensors:", self.color_bg2,
                        self.padding_left, line_pos, self.font_small)
         line_pos += self.small_font_size
 
         
         for sensor in sensors:
-            self.printText(sensor[0], self.color_bg2,
+            self.print_text(sensor[0], self.color_bg2,
                            self.padding_left, line_pos, self.font_small)
-            self.printText(
+            self.print_text(
                 sensor[1], self.player, self.padding_left+200, line_pos, self.font_small)
             line_pos += self.small_font_size
 
         pygame.display.flip()
 
-    def printText(self, text, color, x, y, font=None):
+    def print_text(self, text, color, x, y, font=None):
         font = font if font else self.font
         img = font.render(text, True, color)
         self.screen.blit(img, (x, y))
