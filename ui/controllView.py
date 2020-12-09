@@ -3,7 +3,7 @@ from ui.view import View
 
 
 class ControllView(View):
-    def __init__(self, name, width, height):
+    def __init__(self, name, width=300, height=300):
         super(ControllView, self).__init__(name, width, height)
         self.button_on = Button(self,0,0,100,36,"ON")
 

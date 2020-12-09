@@ -2,7 +2,7 @@ import pygame
 
 
 class View:
-    def __init__(self, name, width, height):
+    def __init__(self, name, width=300, height=300):
         self.name = name
         self.color_bg = (38, 70, 83)
         self.color_bg2 = (42, 157, 143)

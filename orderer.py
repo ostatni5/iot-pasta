@@ -6,14 +6,13 @@ import pygame
 
 SCREEN_X = 20
 SCREEN_Y = 30 
-SCREEN_WIDTH = 300
-SCREEN_HEIGHT = 300
+
 NAME = "Orderer"
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 
 pygame.init()
 
-ui = ControllView(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
+ui = ControllView(NAME)
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
