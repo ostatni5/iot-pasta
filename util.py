@@ -1,3 +1,6 @@
+import json
+from types import SimpleNamespace
+
 pastaData = {
     "Fusilli": {
         "temperature": 150,
@@ -72,3 +75,6 @@ def subscribe_setup(mqttc, device):
     mqttc.publish("pasta/log", f'kontroler {device} ozyl', 0, True)
     mqttc.subscribe(f'pasta/{device}e/control')
     mqttc.subscribe(f'pasta/data/{device}')
+
+def jsonstr_to_obj(json):
+    return json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
