@@ -5,7 +5,7 @@ from utilities.util import *
 
 
 
-class Pipeline:
+class Pipeline(Device):
     def __init__(self, throughput=10):
         self.throughput = throughput
         self.volume = 0
