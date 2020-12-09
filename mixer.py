@@ -1,3 +1,4 @@
+from device import Device
 import paho.mqtt.client as mqtt
 import time, random
 # some_file.py
@@ -14,16 +15,13 @@ def getTemperature():
     # TODO
 
 
-class Mixer:
+class Mixer(Device):
     def __init__(self, mix_time=10, maxTemperature=200, maxPressure=3):
+        super(Mixer, self).__init__("mixer")
         self.volume = 0
         self.mix_time = mix_time
         self.maxPressure = maxPressure
         self.maxTemperature = maxTemperature
-        self.is_on = False
-        self.running = False
-        self.name = "mixer"
-        self.progress = 0
 
     def add(self, product):
         if self.volume == 0:

@@ -1,8 +1,10 @@
+from device import Device
 import paho.mqtt.client as mqtt
 import time, random
 
-class Belt:
+class Belt(Device):
     def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, size=10, segmentCapacity=100):
+        super(Belt, self).__init__("Belt")
         self.maxDuration = maxDuration
         self.minDuration = minDuration
         self.size = size
