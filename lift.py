@@ -1,8 +1,9 @@
 import paho.mqtt.client as mqtt
+from device import Device
 import time, random
 from utilities.util import *
 
-class Lift:
+class Lift(Device):
     def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
         super(Lift, self).__init__("Lift")
         self.maxDuration = maxDuration

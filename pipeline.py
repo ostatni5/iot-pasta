@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from device import Device
 import time, random
 # some_file.py
 from utilities.util import *
@@ -7,11 +8,9 @@ from utilities.util import *
 
 class Pipeline(Device):
     def __init__(self, throughput=10):
+        super().__init__("pipeline")
         self.throughput = throughput
         self.volume = 0
-        self.is_on = False
-        self.running = False
-        self.name = "pipeline"
 
     def add(self, product):
         if self.volume == 0:
