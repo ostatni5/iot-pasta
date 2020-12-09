@@ -20,7 +20,6 @@ class Mixer:
         self.mix_time = mix_time
         self.maxPressure = maxPressure
         self.maxTemperature = maxTemperature
-
         self.is_on = False
         self.running = False
         self.name = "mixer"
@@ -35,11 +34,11 @@ class Mixer:
 
     def mix(self):
         stopped = False
-        i = 100
-        while i > 0 and not stopped:
-            time.sleep(self.mix_time / i)
+        self.progress = 0
+        while self.progress < 100 and not stopped:
+            time.sleep(self.mix_time / 100)
             stopped = self.check_temp() or self.check_pressure()
-            i -= 1
+            self.progress += 1
         if stopped:
             mqttc.publish('pasta/log', "produkcja zatrzymana na mieszaczu", 0, False)
             print("mieszacz wylaczony")
@@ -98,7 +97,4 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_start()
-
-while True:
-    time.sleep(1)
+mqttc.loop_forever()
