@@ -40,7 +40,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    global running, job
+    global running, job, stopped
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
@@ -48,7 +48,8 @@ def on_message(client, userdata, msg):
     if topics[-1] == "order":
         if not running:
             running = True
-            job = Thread(target=make_order, args=(payload, mqttc))
+            stopped = False
+            job = Thread(target=make_order, args=(payload, mqttc, ))
             job.start()
     elif topics[-1] == "temp":
         check_temp(payload, mqttc)
