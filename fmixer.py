@@ -1,10 +1,13 @@
+import time
+
+from device import Device
 from ui.view import View
 import os
 import paho.mqtt.client as mqtt
 import pygame
 from utilities.util import *
 
-SCREEN_X = 20+ 300*1
+SCREEN_X = 20 + 300 * 1
 SCREEN_Y = 30
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 300
@@ -18,42 +21,75 @@ ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
 is_on = False
 
 
-def make_order(payload, mqttc):
-    # we o poiwedz jaki to makaron
-    mqttc.publish('pasta/log', "mieszacz wstepny zrobil makaron", 0, True)
-    mqttc.publish('pasta/data/wyparzacz', "makaron z mieszacza wstepnego", 0, False)
+def getTemperature():
+    return 90
+    # TODO
+
+
+class FMixer(Device):
+    def __init__(self, mix_time=10, maxTemperature=200):
+        super().__init__("fmixer")
+        self.volume = 0
+        self.mix_time = mix_time
+        self.maxTemperature = maxTemperature
+
+    def add(self, product):
+        if self.volume == 0:
+            self.volume = product.volume
+            self.product = product
+            return True
+        else:
+            return False
+
+    def mix(self):
+        stopped = False
+        self.progress = 0
+        while self.progress < 100 and not stopped:
+            time.sleep(self.mix_time / 100)
+            stopped = self.check_temp()
+            self.progress += 1
+        if stopped:
+            mqttc.publish('pasta/log', "produkcja zatrzymana na mieszaczu wstepnym", 0, False)
+            print("mieszacz wstepny wylaczony")
+        else:
+            self.forward()
+        self.running = False
+
+    def forward(self):
+        mqttc.publish('pasta/log', "mieszacz wstepny zmieszał", 0, True)
+        mqttc.publish('pasta/data/wyparzacz', "dane wysylamy", 0, False)
+        print("mieszacz zmieszał")
+        self.volume = 0
+
+    def check_temp(self):
+        temperature = getTemperature()
+        if temperature > pastaData[self.product.type]["temperature"]:
+            temperature -= 5
+        elif temperature > self.maxTemperature:
+            print("proba wylaczenia mieszacza wstepnego")
+            mqttc.publish('pasta/log', "temperatura na mieszaczu wstepnym za wysoka", 0, False)
+            return True
+        return False
+
+
+fmixer = FMixer()
 
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    # start subscribing to topics
-    # example mqttc.subscribe("topic/topic/topic")
-    mqttc.publish("pasta/wyparzacz/control", "on", 0, True)
-    mqttc.publish("pasta/log", "mieszacz stepny ozyl", 0, True)
-    mqttc.subscribe("pasta/mieszacz_wstepny/control")
-    mqttc.subscribe("pasta/data/mieszacz_wstepny")
-    # end subscribing to topics
-
-
-def parse_control(payload, mqttc):
-    global is_on
-    if payload == "on" and not is_on:
-        is_on = True
-    elif payload == "off" and is_on:
-        is_on = False
-    mqttc.publish("pasta/log", f'mieszacz_wstepny is {payload}', 0, True)
+    subscribe_setup(mqttc, fmixer.name)
 
 
 def on_message(client, userdata, msg):
-    global is_on
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
-    # check topics and do something
     if topics[-1] == "control":
-        parse_control(payload, mqttc)
-    elif topics[1] == "data" and is_on:
-        make_order(payload, mqttc)
+        parse_control(payload, mqttc, fmixer.name, fmixer.is_on)
+    elif topics[1] == "data":
+        if fmixer.is_on and not fmixer.running:
+            fmixer.add(jsonstr_to_obj(payload))
+            fmixer.mix()
 
     # end checking topics
 
@@ -85,6 +121,5 @@ while running_ui:
 
     ui.render(state)
     clock.tick(10)
-
 
 pygame.quit()
