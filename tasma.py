@@ -39,7 +39,8 @@ class Belt:
     def move(self):
         
         time.sleep(self.duration)
-        self.shift()
+        product = self.shift()
+        #mqttc.publish() # product do nast maszyny
         
         
 
@@ -55,20 +56,20 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
 
 
+belt = Belt()
 mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
-belt = Belt()
 
 
 
 while True:
-    print(belt.duration)
     
+    print(belt.array)
     belt.move()
     belt.add(random.randint(0,33))
-    print(belt.array)
+    print(belt.duration)
     belt.alterDuration()
 

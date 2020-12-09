@@ -55,20 +55,20 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
 
 
+Lift = Lift()
 mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
-# Lift = Lift()
 
 
 
 while True:
-    print(Lift.duration)
-    
+
+    print(Lift.array)
     Lift.move()
     Lift.add(random.randint(0,33))
-    print(Lift.array)
+    print(Lift.duration)
     Lift.alterDuration()
 
