@@ -58,7 +58,7 @@ pipeline = Pipeline()
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    subscribe_setup(mqttc, pipeline.device)
+    subscribe_setup(mqttc, pipeline.name)
 
 
 def on_message(client, userdata, msg):
@@ -66,7 +66,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, pipeline.device, pipeline.is_on)
+        parse_control(payload, mqttc, pipeline.name, pipeline.is_on)
     elif topics[1] == "data":
         if pipeline.is_on and not pipeline.running:
             pipeline.add(jsonstr_to_obj(payload))

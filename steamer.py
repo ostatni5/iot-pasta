@@ -37,7 +37,7 @@ def make_pasta(mqttc, payload):
         print("piec wylaczony")
     else:
         mqttc.publish('pasta/log', "wyparzacz wyparzył", 0, True)
-        mqttc.publish('pasta/product/mieszacz', "dane wysylamy", 0, False)
+        mqttc.publish('pasta/product/'+ devicesForward[self.name], "dane wysylamy", 0, False)
         print("wygrzane")
     running = False
 

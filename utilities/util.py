@@ -93,7 +93,7 @@ def subscribe_setup(mqttc, device):
 
 
 
-def jsonstr_to_obj(json):
+def jsonstr_to_obj(data):
     return json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
 
 def obj_to_jsonstr(obj):
