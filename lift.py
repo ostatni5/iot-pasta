@@ -3,6 +3,7 @@ import time, random
 
 class Lift:
     def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
+        super(Lift, self).__init__("Lift")
         self.maxDuration = maxDuration
         self.minDuration = minDuration
         self.numberOfCarts = numberOfCarts
