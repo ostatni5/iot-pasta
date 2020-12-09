@@ -28,7 +28,7 @@ def getTemperature():
 
 class Steamer(Device):
     def __init__(self, mix_time=10, maxTemperature=200):
-        super().__init__("fmixer")
+        super().__init__("steamer")
         self.volume = 0
         self.mix_time = mix_time
         self.maxTemperature = maxTemperature
