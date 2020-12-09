@@ -2,6 +2,7 @@ from ui.view import View
 import os
 import paho.mqtt.client as mqtt
 import pygame
+from utilities.util import *
 
 SCREEN_X = 20+ 300*1
 SCREEN_Y = 30

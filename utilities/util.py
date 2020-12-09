@@ -64,6 +64,21 @@ pastaData = {
     }
 }
 
+
+devicesForward = {
+    "fmixer": "steamer",
+    "steamer": "mixer",
+    "mixer": "pipeline",
+    "pipeline": "dryer",
+    "dryer": "belt",
+    "belt": "lift",
+    "lift": "scale",
+    "scale": "cooler",
+    "cooler": "silos"
+}
+
+
+
 def parse_control(payload, mqttc, device, is_on):
     if payload == "on" and not is_on:
         is_on = True
