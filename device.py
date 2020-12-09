@@ -4,4 +4,4 @@ class Device:
         self.running = False
         self.progress = 0
         self.product = None
-        self.device = name
+        self.name = name
