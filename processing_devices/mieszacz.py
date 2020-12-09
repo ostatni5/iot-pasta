@@ -1,19 +1,20 @@
 import paho.mqtt.client as mqtt
 import time, random
-from util import pastaData, parse_control, subscribe_setup
+from utilities.util import *
+
 
 def getPressure():
     return 2
     # TODO
+
 
 def getTemperature():
     return 90
     # TODO
 
 
-
 class Mixer:
-    def __init__(self, mix_time = 10, maxTemperature=200, maxPressure=3):
+    def __init__(self, mix_time=10, maxTemperature=200, maxPressure=3):
         self.volume = 0
         self.mix_time = mix_time
         self.maxPressure = maxPressure
@@ -35,7 +36,7 @@ class Mixer:
         stopped = False
         i = 100
         while i > 0 and not stopped:
-            time.sleep(self.mix_time/i)
+            time.sleep(self.mix_time / i)
             stopped = self.check_temp() or self.check_pressure()
             i -= 1
         if stopped:
@@ -44,7 +45,7 @@ class Mixer:
         else:
             self.forward()
         self.running = False
-        
+
     def forward(self):
         mqttc.publish('pasta/log', "mieszacz zmieszał", 0, True)
         mqttc.publish('pasta/product/pipeline', "dane wysylamy", 0, False)
@@ -70,13 +71,15 @@ class Mixer:
             mqttc.publish('pasta/log', "ciśnienie na mieszaczu za wysokie", 0, False)
             return True
         return False
-    
+
 
 mixer = Mixer()
+
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     subscribe_setup(mqttc, mixer.device)
+
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
