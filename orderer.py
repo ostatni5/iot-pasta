@@ -21,8 +21,9 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # start subscribing to topics
     # example mqttc.subscribe("topic/topic/topic")
-    mqttc.publish("pasta/log", "orderer ozyl", 0, True)
-    mqttc.publish("pasta/product/mieszacz_wstepny/order",
+    mqttc.publish("pasta/log", "orderera ozyl", 0, True)
+    mqttc.publish("pasta/mieszacz_wstepny/control", "on", 0, True)
+    mqttc.publish("pasta/data/mieszacz_wstepny",
                   "rururkowce", 0, False)
     # end subscribing to topics
 
