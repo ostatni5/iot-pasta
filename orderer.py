@@ -2,10 +2,10 @@ from ui import UI
 import paho.mqtt.client as mqtt
 import pygame
 
-x = 100
-y = 100
+SCREEN_X = 20
+SCREEN_Y = 30
 import os
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X,SCREEN_Y)
 
 pygame.init()
 
@@ -21,8 +21,9 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # start subscribing to topics
     # example mqttc.subscribe("topic/topic/topic")
-    mqttc.publish("pasta/log", "orderer ozyl", 0, True)
-    mqttc.publish("pasta/product/mieszacz_wstepny/order",
+    mqttc.publish("pasta/log", "orderera ozyl", 0, True)
+    mqttc.publish("pasta/mieszacz_wstepny/control", "on", 0, True)
+    mqttc.publish("pasta/data/mieszacz_wstepny",
                   "rururkowce", 0, False)
     # end subscribing to topics
 
