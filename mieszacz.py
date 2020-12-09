@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 import time, random
-from util import pastaData
+from util import pastaData, parse_control, subscribe_setup
 
 def getPressure():
     return 2
@@ -19,6 +19,10 @@ class Mixer:
         self.maxPressure = maxPressure
         self.maxTemperature = maxTemperature
 
+        self.is_on = False
+        self.running = False
+        self.device = "mixer"
+
     def add(self, product):
         if self.volume == 0:
             self.volume = product.volume
@@ -28,12 +32,24 @@ class Mixer:
             return False
 
     def mix(self):
-        time.sleep(self.mix_time)
+        stopped = False
+        i = 100
+        while i > 0 and not stopped:
+            time.sleep(self.mix_time/i)
+            stopped = self.check_temp() or self.check_pressure()
+            i -= 1
+        if stopped:
+            mqttc.publish('pasta/log', "produkcja zatrzymana na mieszaczu", 0, False)
+            print("mieszacz wylaczony")
+        else:
+            self.forward()
+        self.running = False
         
     def forward(self):
-        # mqttc.publish() # do rurururkowca
+        mqttc.publish('pasta/log', "mieszacz zmieszał", 0, True)
+        mqttc.publish('pasta/product/pipeline', "dane wysylamy", 0, False)
+        print("mieszacz zmieszał")
         self.volume = 0
-        pass
 
     def check_temp(self):
         temperature = getTemperature()
@@ -56,16 +72,23 @@ class Mixer:
         return False
     
 
+mixer = Mixer()
+
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    #mqttc.subscribe("pasta/log")
-    #mqttc.subscribe("pasta/log")
-
+    subscribe_setup(mqttc, mixer.device)
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
+    if topics[-1] == "control":
+        parse_control(payload, mqttc, mixer.device, mixer.is_on)
+    elif topics[1] == "data":
+        if mixer.is_on and not mixer.running:
+            mixer.add(jsonstr_to_obj(payload))
+            mixer.mix()
+
 
 mqttc = mqtt.Client()
 mqttc.on_message = on_message
@@ -74,5 +97,4 @@ mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
 
 while True:
-    print("SAME SAME")
     time.sleep(1)
