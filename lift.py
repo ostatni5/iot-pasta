@@ -96,8 +96,6 @@ while running_ui:
             running_ui = False
 
     lift.move()
-    lift.add(random.randint(0, 33))
-    lift.alterDuration()
 
     state = {
         "processing": str(device.product),

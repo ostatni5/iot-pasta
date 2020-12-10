@@ -44,8 +44,8 @@ class Pipeline(Device):
         
         weight = self.product["weight"] * batch / self.product["volume"]
         part = {
-            "id": self.product.id,
-            "type": self.product.type,
+            "id": self.product["id"],
+            "type": self.product["type"],
             "weight": weight,
             "volume:": batch,
             "part": self.part
