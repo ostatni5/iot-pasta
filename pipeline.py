@@ -21,9 +21,7 @@ class Pipeline(Device):
             return False
 
     def push(self):
-        stopped = False
-        
-        while self.volume > 0 and not stopped:
+        while self.volume > 0:
             self.forward()
             
             if stopped:
