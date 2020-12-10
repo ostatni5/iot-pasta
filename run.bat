@@ -19,9 +19,9 @@ START /b python scale.py > nul
 timeout 1
 START /b python cooler.py > nul
 timeout 1
-START /b python silos.py > nul
+@REM START /b python silos.py > nul
 
-timeout 1
-START python logger.py
+@REM timeout 1
+@REM START python logger.py
 
 
