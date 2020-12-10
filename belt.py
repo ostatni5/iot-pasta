@@ -1,3 +1,4 @@
+from device import Device
 import random
 import time
 

@@ -1,10 +1,15 @@
 import paho.mqtt.client as mqtt
 from device import Device
 import time, random
+import os
+import pygame
 # some_file.py
 from utilities.util import *
 
-
+SCREEN_X = 20 + 300 * 3
+SCREEN_Y = 30 + 330 * 1
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 class Silos(Device):
     def __init__(self, weight=100):
@@ -40,4 +45,30 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+
+device = silos
+ui = device.ui
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()
