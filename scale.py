@@ -21,15 +21,18 @@ class Scale(Device):
     def add(self, product):
         if(self.product is None):
             self.product = product
-        elif product is not None: 
+        elif product is not None:
             self.product.weight += product.weight
             self.product.volume += product.volume
 
         return True
 
     def push(self):
+        self.running = True
         if self.product.weight >= self.weight:
             self.forward()
+        else:
+            self.progress = self.product.weight / self.weight
         self.running = False
 
     def forward(self):
@@ -80,7 +83,7 @@ while running_ui:
             running_ui = False
 
     state = {
-        "processing": str(device.product.id if hasattr(device.product,"id") else None ),
+        "processing": str(device.product.id if hasattr(device.product, "id") else None),
         "progres": str(device.progress),
         "status": device.get_status(),
         "sensors": [],

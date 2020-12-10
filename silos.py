@@ -18,7 +18,7 @@ class Silos(Device):
 
     def add(self, product):
         self.products.append(product)
-        mqttc.publish('pasta/log', f"silos brrr {self.product.id}", 0, True)
+        mqttc.publish('pasta/log', f"silos brrr {product}", 0, True)
         self.progress+=1
 
 
