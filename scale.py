@@ -1,9 +1,16 @@
 import paho.mqtt.client as mqtt
 from device import Device
-import time, random
+import time
+import random
+import os
+import pygame
 # some_file.py
 from utilities.util import *
 
+SCREEN_X = 20 + 300 * 2
+SCREEN_Y = 30 + 330 * 1
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 
 class Scale(Device):
@@ -23,12 +30,12 @@ class Scale(Device):
         if self.product.weight >= self.weight:
             self.forward()
         self.running = False
-    
+
     def forward(self):
         json_part = dict_to_jsonstr(self.product)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
+        mqttc.publish('pasta/data/' +
+                      devicesForward[self.name], json_part, 0, False)
         self.product = None
-
 
 
 scale = Scale()
@@ -55,4 +62,30 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+
+device = scale
+ui = device.ui
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()
