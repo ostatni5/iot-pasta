@@ -21,19 +21,12 @@ ui = ControllView(NAME)
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # start subscribing to topics
-    amount = 200
-    part = {
-        "id": "pasta po prostu",
-        "type": "Fusilli",
-        "weight": pastaData["Fusilli"]["density"]*amount,
-        "volume:": amount
-    }
-    json_part = dict_to_jsonstr(part)
+
     mqttc.publish("pasta/log", "orderera ozyl", 0, True)
-    mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 0, False)
+
     # end subscribing to topics
-    
-                    
+
+
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
     topics = msg.topic.split('/')
@@ -62,6 +55,15 @@ while running_ui:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if ui.button_on.inside(mouse[0], mouse[1]):
                 mqttc.publish('pasta/control', "on", 2, False)
+                amount = 200
+                part = {
+                    "id": "pasta po prostu",
+                    "type": "Fusilli",
+                    "weight": pastaData["Fusilli"]["density"]*amount,
+                    "volume:": amount
+                }
+                json_part = dict_to_jsonstr(part)
+                mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 2, False)
 
     state = {
         "processing": "AAAA",

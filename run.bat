@@ -1,4 +1,4 @@
-START /b python orderer.py > nul
+
 
 timeout 1
 START /b python fmixer.py > nul
@@ -19,8 +19,9 @@ START /b python scale.py > nul
 timeout 1
 START /b python cooler.py > nul
 timeout 1
-@REM START /b python silos.py > nul
+START /b python orderer.py > nul
 
+@REM START /b python silos.py > nul
 @REM timeout 1
 @REM START python logger.py
 
