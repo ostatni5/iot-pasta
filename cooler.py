@@ -100,7 +100,7 @@ while running_ui:
         cooler.cool()
 
     state = {
-        "processing": str(device.product),
+        "processing": str(device.product.id if hasattr(device.product,"id") else None ),
         "progres": str(device.progress),
         "status": device.get_status(),
         "sensors": [],
