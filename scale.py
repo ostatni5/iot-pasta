@@ -8,7 +8,7 @@ from utilities.util import *
 
 class Scale(Device):
     def __init__(self, weight=100):
-        super().__init__("pipeline")
+        super().__init__("scale")
         self.weight = weight
 
     def add(self, product):
