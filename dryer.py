@@ -7,56 +7,45 @@ from utilities.util import *
 
 
 class Dryer(Device):
-    def __init__(self, throughput=10):
+    def __init__(self, floors=3):
         super().__init__("dryer")
-        self.throughput = throughput
-        self.volume = 0
+        self.products = [[] for i in range(0,floors)]
+        self.time = None
 
     def add(self, product):
-        if self.volume == 0:
-            # TODO
+        if len(self.products) > 0:
+            self.products[0].append(product)
+            self.time = pastaData[product.type]["dtime"]
             return True
         else:
             return False
 
-    def push(self):
-        stopped = False
-        
-        while self.volume > 0 and not stopped:
-            self.forward()
-            
-            if stopped:
-                mqttc.publish('pasta/log', "produkcja zatrzymana na rurze", 0, False)
-                print("wyciąg rurowy wylaczony")
+    def shift():
+        last = self.products[-1]
+        self.products.pop()
+        self.products.insert(0, None)
+        return last
+
+    def move(self):
+        self.running = True
+        self.forward()
         self.running = False
     
     def forward(self):
-        step = self.throughput
-        if self.volume < step:
-            batch = self.volume
-            self.volume = 0
-        else:
-            self.volume -= step
-            batch = step
-        
-        weight = self.product["weight"] * batch / self.product["volume"]
-        part = {
-            "type": self.product["type"],
-            "weight": weight,
-            "volume:": batch
-        }
-
-        json_part = dict_to_jsonstr(part)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
+        products = shift()
+        for p in products:
+            json_part = obj_to_jsonstr(p)
+            mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
 
 
 
-pipeline = Pipeline()
+dryer = Dryer()
 
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    subscribe_setup(mqttc, pipeline.name)
+    subscribe_setup(mqttc, dryer.name)
+
 
 
 def on_message(client, userdata, msg):
@@ -64,11 +53,10 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, pipeline.name, pipeline.is_on)
+        parse_control(payload, mqttc, dryer.name, dryer.is_on)
     elif topics[1] == "data":
-        if pipeline.is_on and not pipeline.running:
-            pipeline.add(jsonstr_to_obj(payload))
-            pipeline.push()
+        if dryer.is_on and not dryer.running:
+            dryer.add(jsonstr_to_obj(payload))
 
 
 mqttc = mqtt.Client()
@@ -77,5 +65,11 @@ mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
 
+
+start_time = time.time()
 while True:
+    if dryer.time is not None and time.time() - start_time >= dryer.time:
+        start_time = time.time()
+        dryer.dry()
+    
     time.sleep(1)

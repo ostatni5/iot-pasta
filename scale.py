@@ -1,0 +1,58 @@
+import paho.mqtt.client as mqtt
+from device import Device
+import time, random
+# some_file.py
+from utilities.util import *
+
+
+
+class Scale(Device):
+    def __init__(self, weight=100):
+        super().__init__("pipeline")
+        self.weight = weight
+
+    def add(self, product):
+        if(self.product is None):
+            self.product = product
+        else:
+            self.product.weight += product.weight
+            self.product.volume += product.volume
+        return True
+
+    def push(self):
+        if self.product.weight >= self.weight:
+            self.forward()
+        self.running = False
+    
+    def forward(self):
+        json_part = dict_to_jsonstr(self.product)
+        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
+        self.product = None
+
+
+
+scale = Scale()
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+    subscribe_setup(mqttc, scale.name)
+
+
+def on_message(client, userdata, msg):
+    print(msg.topic + " " + str(msg.payload.decode("utf-8")))
+    topics = msg.topic.split('/')
+    payload = msg.payload.decode("utf-8")
+    if topics[-1] == "control":
+        parse_control(payload, mqttc, scale.name, scale.is_on)
+    elif topics[1] == "data":
+        if scale.is_on and not scale.running:
+            scale.add(jsonstr_to_obj(payload))
+            scale.push()
+
+
+mqttc = mqtt.Client()
+mqttc.on_message = on_message
+mqttc.on_connect = on_connect
+mqttc.connect("test.mosquitto.org")
+mqttc.loop_forever()

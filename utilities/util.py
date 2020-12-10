@@ -11,8 +11,8 @@ pastaData = {
             "oil": 2
         },
         "density": 1.2,
-        "dtime": 1,
-        "ctime": 1
+        "dtime": 15,
+        "ctime": 15
     },
     "Spaghetti":{
         "temperature": 150,
@@ -23,8 +23,8 @@ pastaData = {
             "oil": 3
         },
         "density": 1.2,
-        "dtime": 1,
-        "ctime": 1
+        "dtime": 15,
+        "ctime": 15
     },
     "Bigoli":{
         "temperature": 150,
@@ -35,8 +35,8 @@ pastaData = {
             "oil": 1
         },
         "density": 1.2,
-        "dtime": 1,
-        "ctime": 1
+        "dtime": 15,
+        "ctime": 15
     },
     "Gnocchi":{
         "temperature": 150,
@@ -47,8 +47,8 @@ pastaData = {
             "oil": 3
         },
         "density": 1.2,
-        "dtime": 1,
-        "ctime": 1
+        "dtime": 15,
+        "ctime": 15
     },
     "Riccioli":{
         "temperature": 150,
@@ -59,8 +59,8 @@ pastaData = {
             "oil": 3
         },
         "density": 1.2,
-        "dtime": 1,
-        "ctime": 1
+        "dtime": 15,
+        "ctime": 15
     }
 }
 
