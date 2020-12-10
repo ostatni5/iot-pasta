@@ -60,7 +60,7 @@ while running_ui:
                     "id": "pasta po prostu",
                     "type": "Fusilli",
                     "weight": pastaData["Fusilli"]["density"]*amount,
-                    "volume:": amount
+                    "volume": amount
                 }
                 json_part = dict_to_jsonstr(part)
                 mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 2, False)

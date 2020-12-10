@@ -1,3 +1,4 @@
+from time import time
 import paho.mqtt.client as mqtt
 from pygame.version import PygameVersion
 from device import Device
@@ -30,6 +31,7 @@ class Pipeline(Device):
         while self.volume > 0:
             self.forward()
             self.part += 1
+            self.progress +=1        
         self.running = False
         self.part = 0
     
@@ -42,17 +44,17 @@ class Pipeline(Device):
             self.volume -= step
             batch = step
         
-        weight = self.product["weight"] * batch / self.product["volume"]
+        weight = self.product.weight * batch / self.product.volume
         part = {
-            "id": self.product["id"],
-            "type": self.product["type"],
+            "id": self.product.id,
+            "type": self.product.type,
             "weight": weight,
-            "volume:": batch,
+            "volume": batch,
             "part": self.part
         }
 
         json_part = dict_to_jsonstr(part)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
+        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)        
 
 
 

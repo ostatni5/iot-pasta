@@ -30,9 +30,7 @@ class Cooler(Device):
     def shift(self):
         last = self.products[-1]
         self.products.pop()
-        self.products.insert(0, None)
-        if(last is None):
-            self.product = None
+        self.products.insert(0, [])
         return last
 
     def cool(self):
@@ -43,8 +41,11 @@ class Cooler(Device):
     def forward(self):
         products = self.shift()
         for p in products:
+            time.sleep(0.5)
+            self.product = p
             json_part = obj_to_jsonstr(p)
             mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
+        self.progress+=1
 
 
 
@@ -84,7 +85,8 @@ ui = device.ui
 start_time = time.time()
 while running_ui:
     if cooler.time is not None and time.time() - start_time >= cooler.time:
-        cooler.cool()
+        cooler.cool()        
+        start_time = time.time()
 
     for event in pygame.event.get():
 

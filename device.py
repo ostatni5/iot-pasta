@@ -12,3 +12,7 @@ class Device:
 
     def get_status(self):
         return "On" if self.is_on else "Off"
+
+    def clear(self):
+        self.progress = 0
+        self.product = None

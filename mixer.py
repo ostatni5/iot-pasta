@@ -23,7 +23,7 @@ def getTemperature():
 
 
 class Mixer(Device):
-    def __init__(self, mix_time=10, maxTemperature=200, maxPressure=3):
+    def __init__(self, mix_time=2, maxTemperature=200, maxPressure=3):
         super(Mixer, self).__init__("mixer")
         self.volume = 0
         self.mix_time = mix_time
@@ -54,11 +54,11 @@ class Mixer(Device):
         self.running = False
 
     def forward(self):
-        mqttc.publish('pasta/log', "mieszacz zmieszał", 0, True)
+        mqttc.publish('pasta/log', "mieszacz zmieszal", 0, True)
         mqttc.publish('pasta/data/' +
                       devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
-        print("mieszacz zmieszał")
         self.volume = 0
+        self.clear()
 
     def check_temp(self):
         temperature = getTemperature()

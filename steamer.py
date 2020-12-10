@@ -23,7 +23,7 @@ def getTemperature():
 
 
 class Steamer(Device):
-    def __init__(self, mix_time=10, maxTemperature=200):
+    def __init__(self, mix_time=2, maxTemperature=200):
         super().__init__("steamer")
         self.volume = 0
         self.mix_time = mix_time
@@ -52,10 +52,11 @@ class Steamer(Device):
         self.running = False
 
     def forward(self):
-        mqttc.publish('pasta/log', "wyparzacz wyparzył", 0, True)
+        mqttc.publish('pasta/log', "wyparzacz wyparzyl", 0, True)
         mqttc.publish('pasta/data/'+ devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
         print("wygrzane")
         self.volume = 0
+        self.clear()
 
     def check_temp(self):
         temperature = getTemperature()

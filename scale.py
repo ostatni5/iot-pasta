@@ -21,9 +21,10 @@ class Scale(Device):
     def add(self, product):
         if(self.product is None):
             self.product = product
-        else:
+        elif product is not None: 
             self.product.weight += product.weight
             self.product.volume += product.volume
+
         return True
 
     def push(self):
@@ -32,10 +33,10 @@ class Scale(Device):
         self.running = False
 
     def forward(self):
-        json_part = dict_to_jsonstr(self.product)
+        json_part = obj_to_jsonstr(self.product)
         mqttc.publish('pasta/data/' +
                       devicesForward[self.name], json_part, 0, False)
-        self.product = None
+        self.clear()
 
 
 scale = Scale()

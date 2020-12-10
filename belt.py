@@ -14,7 +14,7 @@ pygame.init()
 
 
 class Belt(Device):
-    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, size=10, segmentCapacity=100):
+    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.1, size=50, segmentCapacity=100):
         super(Belt, self).__init__("belt")
         self.maxDuration = maxDuration
         self.minDuration = minDuration
@@ -35,6 +35,8 @@ class Belt(Device):
         last = self.array[-1]
         self.array.pop()
         self.array.insert(0, None)
+        if last is not None:
+            self.progress+=1
         return last
 
     def add(self, element):
@@ -42,7 +44,6 @@ class Belt(Device):
             self.array[0] = element
             return True
         else:
-            # TODO
             return False
 
     def move(self):
@@ -52,7 +53,6 @@ class Belt(Device):
         if self.product is not None:
             mqttc.publish('pasta/log', f"belt zbeltowal {self.product}", 0, True)
             mqttc.publish('pasta/data/' + devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
-        print("przesuniete")
 
 
 def on_connect(client, userdata, flags, rc):

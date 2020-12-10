@@ -15,7 +15,7 @@ pygame.init()
 
 
 class Lift(Device):
-    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
+    def __init__(self, maxDuration=8, minDuration=0.2, duration=0.1, numberOfCarts=10, cartLoad=100):
         super(Lift, self).__init__("lift")
         self.maxDuration = maxDuration
         self.minDuration = minDuration
@@ -36,6 +36,8 @@ class Lift(Device):
         last = self.array[-1]
         self.array.pop()
         self.array.insert(0, None)
+        if last is not None:
+            self.progress+=1
         return last
 
     def send(self):
@@ -55,7 +57,6 @@ class Lift(Device):
         if self.product is not None:
             mqttc.publish('pasta/log', f"lift zliftowal {self.product}", 0, True)
             mqttc.publish('pasta/data/' + devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
-        print("przesuniete")
         
         
 lift = Lift()

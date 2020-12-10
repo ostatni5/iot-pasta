@@ -11,8 +11,8 @@ pastaData = {
             "oil": 2
         },
         "density": 1.2,
-        "dtime": 15,
-        "ctime": 15
+        "dtime": 2,
+        "ctime": 2
     },
     "Spaghetti": {
         "temperature": 150,

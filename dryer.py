@@ -1,5 +1,9 @@
+from typing import List
 import paho.mqtt.client as mqtt
-import time, random,os,pygame
+import time
+import random
+import os
+import pygame
 from device import Device
 # some_file.py
 from utilities.util import *
@@ -9,10 +13,11 @@ SCREEN_Y = 30
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
 
+
 class Dryer(Device):
     def __init__(self, floors=3):
         super().__init__("dryer")
-        self.products = [[] for i in range(0,floors)]
+        self.products = [[],[],[]]
         self.time = None
 
     def add(self, product):
@@ -27,22 +32,25 @@ class Dryer(Device):
     def shift(self):
         last = self.products[-1]
         self.products.pop()
-        self.products.insert(0, None)
-        if(last is None):
-            self.product = None
+        self.products.insert(0, [])
         return last
 
     def dry(self):
         self.running = True
         self.forward()
         self.running = False
-    
+
     def forward(self):
         products = self.shift()
-        for p in products:
-            json_part = obj_to_jsonstr(p)
-            mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
-
+        if products is not None:
+            for p in products:
+                time.sleep(0.5)
+                self.product = p
+                mqttc.publish('pasta/log', f"dryyyy zbeltowal {p}", 0, True)
+                json_part = obj_to_jsonstr(p)
+                mqttc.publish('pasta/data/' +
+                              devicesForward[self.name], json_part, 0, False)
+            self.progress+=1
 
 
 dryer = Dryer()
@@ -79,8 +87,9 @@ ui = device.ui
 start_time = time.time()
 while running_ui:
     if dryer.time is not None and time.time() - start_time >= dryer.time:
-        dryer.dry()
-    
+        dryer.dry()        
+        start_time = time.time()
+
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
