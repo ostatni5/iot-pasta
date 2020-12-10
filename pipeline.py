@@ -56,7 +56,7 @@ class Pipeline(Device):
         mqttc.publish('pasta/log', f"pip install {self.product.id}", 0, True)
 
         json_part = dict_to_jsonstr(part)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)        
+        mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 2, False)        
 
 
 

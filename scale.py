@@ -29,7 +29,7 @@ class Scale(Device):
 
     def push(self):
         self.running = True
-        if self.product.weight >= pastaData[self.product['type']]["density"]*self.weight:
+        if self.product.weight >= pastaData[self.product.type]["density"]*self.weight:
             self.forward()
         else:
             self.progress = self.product.weight / self.weight
@@ -37,8 +37,9 @@ class Scale(Device):
 
     def forward(self):
         json_part = obj_to_jsonstr(self.product)
+        mqttc.publish('pasta/log', f"wagam waguje ", 0, True)
         mqttc.publish('pasta/data/' +
-                      devicesForward[self.name], json_part, 0, False)
+                      devicesForward[self.name], json_part, 2, False)
         self.clear()
 
 

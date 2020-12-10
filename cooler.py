@@ -40,12 +40,14 @@ class Cooler(Device):
     
     def forward(self):
         products = self.shift()
-        for p in products:
-            time.sleep(0.5)
-            self.product = p
-            json_part = obj_to_jsonstr(p)
-            mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
-        self.progress+=1
+        if len(products) >0:
+            self.progress+=1
+            for p in products:
+                time.sleep(0.5)
+                self.product = p
+                json_part = obj_to_jsonstr(p)
+                mqttc.publish('pasta/log', f"cooool zimno {p}", 0, True)
+                mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 2, False)            
 
 
 
@@ -97,9 +99,6 @@ while running_ui:
             mqttc.loop_stop()
             running_ui = False
     
-    if cooler.time is not None:
-        time.sleep(cooler.time)
-        cooler.cool()
 
     state = {
         "processing": str(device.product.id if hasattr(device.product,"id") else None ),

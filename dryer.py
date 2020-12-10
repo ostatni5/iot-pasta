@@ -42,15 +42,16 @@ class Dryer(Device):
 
     def forward(self):
         products = self.shift()
-        if products is not None:
+        if len(products) >0:
+            self.progress+=1
             for p in products:
                 time.sleep(0.5)
                 self.product = p
                 mqttc.publish('pasta/log', f"dryyyy zbeltowal {p}", 0, True)
                 json_part = obj_to_jsonstr(p)
                 mqttc.publish('pasta/data/' +
-                              devicesForward[self.name], json_part, 0, False)
-            self.progress+=1
+                              devicesForward[self.name], json_part, 2, False)
+            
 
 
 dryer = Dryer()
