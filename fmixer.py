@@ -108,4 +108,10 @@ while running_ui:
         "processing": str(device.product),
         "progres": str(device.progress),
         "status": device.get_status(),
-        "sensors": [["Temp", str(getTemperature())]],
+        "sensors": [["Temp", str(getTemperature())]]
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()
