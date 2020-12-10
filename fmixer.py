@@ -83,7 +83,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, fmixer.name, fmixer.is_on)
+        parse_control(payload, mqttc, fmixer.name)
     elif topics[1] == "data":
         if fmixer.is_on and not fmixer.running:
             fmixer.add(jsonstr_to_obj(payload))

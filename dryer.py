@@ -53,7 +53,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, dryer.name, dryer.is_on)
+        parse_control(payload, mqttc, dryer.name)
     elif topics[1] == "data":
         if dryer.is_on and not dryer.running:
             dryer.add(jsonstr_to_obj(payload))

@@ -85,7 +85,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, steamer.name, steamer.is_on)
+        parse_control(payload, mqttc, steamer)
     elif topics[1] == "data":
         if steamer.is_on and not steamer.running:
             steamer.add(jsonstr_to_obj(payload))

@@ -85,7 +85,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, mixer.name, mixer.is_on)
+        parse_control(payload, mqttc, mixer)
     elif topics[1] == "data":
         if mixer.is_on and not mixer.running:
             mixer.add(jsonstr_to_obj(payload))

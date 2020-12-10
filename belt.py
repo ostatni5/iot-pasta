@@ -59,7 +59,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, belt.name, belt.is_on)
+        parse_control(payload, mqttc, belt)
     elif topics[1] == "data":
         if belt.is_on and not belt.running:
             belt.add(jsonstr_to_obj(payload))

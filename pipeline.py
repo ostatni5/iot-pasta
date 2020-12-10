@@ -63,7 +63,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, pipeline.name, pipeline.is_on)
+        parse_control(payload, mqttc, pipeline)
     elif topics[1] == "data":
         if pipeline.is_on and not pipeline.running:
             pipeline.add(jsonstr_to_obj(payload))
