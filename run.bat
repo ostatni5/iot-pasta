@@ -1,25 +1,27 @@
 START /b python orderer.py 
 
-ping 127.0.0.1 -n 2 > nul
+timeout 1
 START /b python fmixer.py
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python steamer.py 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python mixer.py 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python pipeline.py 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python dryer.py 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python belt.py 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START /b python lift.py 
-ping 127.0.0.1 -n 2 > nul 
-@REM START /b python scale.py 
-@REM START /b python cooler.py 
-@REM START /b python silos.py 
+timeout 1
+START /b python scale.py 
+timeout 1
+START /b python cooler.py 
+timeout 1
+START /b python silos.py 
 
-ping 127.0.0.1 -n 2 > nul 
+timeout 1
 START python logger.py
 
 
