@@ -14,7 +14,7 @@ pygame.init()
 
 
 class Scale(Device):
-    def __init__(self, weight=100):
+    def __init__(self, weight=200):
         super().__init__("scale")
         self.weight = weight
 
@@ -29,7 +29,7 @@ class Scale(Device):
 
     def push(self):
         self.running = True
-        if self.product.weight >= self.weight:
+        if self.product.weight >= pastaData[self.product['type']]["density"]*self.weight:
             self.forward()
         else:
             self.progress = self.product.weight / self.weight
