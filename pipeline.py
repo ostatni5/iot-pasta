@@ -34,6 +34,7 @@ class Pipeline(Device):
             self.progress +=1        
         self.running = False
         self.part = 0
+        self.product = None
     
     def forward(self):
         step = self.throughput
@@ -52,6 +53,7 @@ class Pipeline(Device):
             "volume": batch,
             "part": self.part
         }
+        mqttc.publish('pasta/log', f"pip install {self.product.id}", 0, True)
 
         json_part = dict_to_jsonstr(part)
         mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)        

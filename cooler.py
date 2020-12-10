@@ -84,10 +84,12 @@ ui = device.ui
 
 start_time = time.time()
 while running_ui:
-    if len(self.products[0]) + len(self.products[1]) + len(self.products[2]) != 0:
+    if len(device.products[0]) + len(device.products[1]) + len(device.products[2]) != 0:
         if cooler.time is not None and time.time() - start_time >= cooler.time:
             cooler.cool()        
             start_time = time.time()
+    else:
+        start_time = time.time()
 
     for event in pygame.event.get():
 

@@ -14,12 +14,12 @@ pygame.init()
 
 def getPressure():
     return 2
-    # TODO
+
 
 
 def getTemperature():
     return 90
-    # TODO
+
 
 
 class Mixer(Device):
@@ -125,7 +125,7 @@ while running_ui:
 
     state = {
         "processing": str(device.product.id if hasattr(device.product,"id") else None ),
-        "progres": str(device.progress),
+        "progres": str(device.progress)+"%",
         "status": device.get_status(),
         "sensors": [["Temp", str(getTemperature())],
                     ["Press", str(getPressure())]],

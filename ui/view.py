@@ -37,7 +37,7 @@ class View:
                         200, line_pos, self.font_small)
         line_pos += self.small_font_size
 
-        self.print_text("Processing:", self.color_bg2,
+        self.print_text("Processed:", self.color_bg2,
                         self.padding_left, line_pos, self.font_small)
         self.print_text(progres, self.rock, self.padding_left +
                         200, line_pos, self.font_small)
