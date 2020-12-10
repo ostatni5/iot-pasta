@@ -6,7 +6,7 @@ import pygame
 # some_file.py
 from utilities.util import *
 
-SCREEN_X = 20 + 300 * 3
+SCREEN_X = 20 + 300 * 4
 SCREEN_Y = 30 + 330 * 1
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
