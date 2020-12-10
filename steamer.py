@@ -11,14 +11,10 @@ import paho.mqtt.client as mqtt
 
 SCREEN_X = 20 + 300 * 2
 SCREEN_Y = 30
-SCREEN_WIDTH = 300
-SCREEN_HEIGHT = 300
-NAME = "wyparzacz"
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 
 pygame.init()
 
-ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 def getTemperature():
@@ -104,6 +100,9 @@ mqttc.loop_start()
 running_ui = True
 clock = pygame.time.Clock()
 
+device = steamer
+ui = device.ui
+
 while running_ui:
 
     for event in pygame.event.get():
@@ -113,10 +112,10 @@ while running_ui:
             running_ui = False
 
     state = {
-        "processing": str(job),
-        "progres": "0%",
-        "status": str(is_on),
-        "sensors": [["Temp[C]", str(getTemperature())]],
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [["Temp", str(getTemperature())]],
     }
 
     ui.render(state)

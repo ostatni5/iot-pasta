@@ -1,9 +1,14 @@
 import paho.mqtt.client as mqtt
+from pygame.version import PygameVersion
 from device import Device
-import time, random
+import pygame ,os
 # some_file.py
 from utilities.util import *
 
+SCREEN_X = 20 + 300 * 4
+SCREEN_Y = 30
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 
 class Pipeline(Device):
@@ -74,4 +79,29 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+device = pipeline
+ui = device.ui
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()

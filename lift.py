@@ -1,17 +1,21 @@
 import paho.mqtt.client as mqtt
 from device import Device
-import time, random
+import time, random,os, pygame
 from utilities.util import *
+
+SCREEN_X = 20 + 300 * 1
+SCREEN_Y = 30 + 330 * 1
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 class Lift(Device):
     def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
-        super(Lift, self).__init__("Lift")
+        super(Lift, self).__init__("lift")
         self.maxDuration = maxDuration
         self.minDuration = minDuration
         self.numberOfCarts = numberOfCarts
         self.duration = duration
         self.array = [None for i in range(0,self.numberOfCarts)]
-        self.name = "lift"
 
     def alterDuration(self, newDuration=None):
         if(newDuration == None):
@@ -59,20 +63,40 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
 
 
-Lift = Lift()
+lift = Lift()
 mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
 
+running_ui = True
+clock = pygame.time.Clock()
 
+device = lift
+ui = device.ui
 
-while True:
+while running_ui:
 
-    print(Lift.array)
-    Lift.move()
-    Lift.add(random.randint(0,33))
-    print(Lift.duration)
-    Lift.alterDuration()
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    lift.move()
+    lift.add(random.randint(0,33))
+    lift.alterDuration()
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()
 
