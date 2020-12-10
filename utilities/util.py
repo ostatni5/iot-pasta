@@ -100,4 +100,4 @@ def obj_to_jsonstr(obj):
     return json.dumps(obj.__dict__)
 
 def dict_to_jsonstr(dictionary):
-    json.dumps(dictionary)
+    return json.dumps(dictionary)

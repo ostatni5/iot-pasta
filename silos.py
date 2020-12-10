@@ -30,7 +30,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, silos.name, silos.is_on)
+        parse_control(payload, mqttc, silos)
     elif topics[1] == "data":
         if silos.is_on:
             silos.add(jsonstr_to_obj(payload))

@@ -23,7 +23,7 @@ class Dryer(Device):
         else:
             return False
 
-    def shift():
+    def shift(self):
         last = self.products[-1]
         self.products.pop()
         self.products.insert(0, None)
@@ -35,7 +35,7 @@ class Dryer(Device):
         self.running = False
     
     def forward(self):
-        products = shift()
+        products = self.shift()
         for p in products:
             json_part = obj_to_jsonstr(p)
             mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 0, False)
@@ -55,7 +55,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, dryer.name)
+        parse_control(payload, mqttc, dryer)
     elif topics[1] == "data":
         if dryer.is_on and not dryer.running:
             dryer.add(jsonstr_to_obj(payload))

@@ -99,4 +99,3 @@ while running_ui:
     clock.tick(10)
 
 pygame.quit()
-

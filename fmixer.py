@@ -75,7 +75,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, fmixer.name)
+        parse_control(payload, mqttc, fmixer)
     elif topics[1] == "data":
         if fmixer.is_on and not fmixer.running:
             fmixer.add(jsonstr_to_obj(payload))
@@ -109,9 +109,3 @@ while running_ui:
         "progres": str(device.progress),
         "status": device.get_status(),
         "sensors": [["Temp", str(getTemperature())]],
-    }
-
-    ui.render(state)
-    clock.tick(10)
-
-pygame.quit()
