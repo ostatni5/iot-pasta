@@ -1,13 +1,14 @@
 import os
-from ui.controllView import ControllView
+
 import paho.mqtt.client as mqtt
 import pygame
 from utilities.util import *
 
 
+from ui.controllView import ControllView
 
 SCREEN_X = 20
-SCREEN_Y = 30 
+SCREEN_Y = 30
 
 NAME = "Orderer"
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
@@ -15,6 +16,7 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
 
 ui = ControllView(NAME)
+
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -59,7 +61,7 @@ while running_ui:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if ui.button_on.inside(mouse[0], mouse[1]):
-                pygame.quit()
+                mqttc.publish('pasta/control', "on", 0, False)
 
     state = {
         "processing": "AAAA",
@@ -70,6 +72,5 @@ while running_ui:
 
     ui.render(state, mouse)
     clock.tick(10)
-
 
 pygame.quit()

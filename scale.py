@@ -50,7 +50,7 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
-    if topics[-1] == "control":
+    if topics[-1] == "control" or topics[1] == "control":
         parse_control(payload, mqttc, scale)
     elif topics[1] == "data":
         if scale.is_on and not scale.running:

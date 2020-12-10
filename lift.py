@@ -1,12 +1,18 @@
+import os
+import pygame
+import random
+import time
+
 import paho.mqtt.client as mqtt
+
 from device import Device
-import time, random,os, pygame
 from utilities.util import *
 
 SCREEN_X = 20 + 300 * 1
 SCREEN_Y = 30 + 330 * 1
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
+
 
 class Lift(Device):
     def __init__(self, maxDuration=8, minDuration=0.2, duration=0.5, numberOfCarts=10, cartLoad=100):
@@ -15,29 +21,29 @@ class Lift(Device):
         self.minDuration = minDuration
         self.numberOfCarts = numberOfCarts
         self.duration = duration
-        self.array = [None for i in range(0,self.numberOfCarts)]
+        self.array = [None for i in range(0, self.numberOfCarts)]
 
     def alterDuration(self, newDuration=None):
-        if(newDuration == None):
-            self.duration = self.minDuration + random.random()*self.maxDuration
+        if (newDuration == None):
+            self.duration = self.minDuration + random.random() * self.maxDuration
             return
         self.duration = max(min(newDuration, self.maxDuration), self.minDuration)
 
     def getSpeed(self):
-        return 1/self.duration
+        return 1 / self.duration
 
     def shift(self):
         last = self.array[-1]
         self.array.pop()
         self.array.insert(0, None)
         return last
-        
+
     def send(self):
         el = self.shift()
         mqttc.publish()
 
     def add(self, element):
-        if(self.array[0] == None):
+        if (self.array[0] == None):
             self.array[0] = element
             return True
         else:
@@ -45,7 +51,7 @@ class Lift(Device):
             return False
 
     def move(self):
-        
+
         time.sleep(self.duration)
         self.shift()
         
@@ -64,6 +70,11 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
+    if topics[-1] == "control" or topics[1] == "control":
+        parse_control(payload, mqttc, lift)
+    elif topics[1] == "data":
+        if lift.is_on and not lift.running:
+            lift.add(jsonstr_to_obj(payload))
 
 
 
@@ -88,7 +99,7 @@ while running_ui:
             running_ui = False
 
     lift.move()
-    lift.add(random.randint(0,33))
+    lift.add(random.randint(0, 33))
     lift.alterDuration()
 
     state = {

@@ -47,7 +47,7 @@ class FMixer(Device):
 
     def forward(self):
         mqttc.publish('pasta/log', "mieszacz wstepny zmieszał", 0, True)
-        mqttc.publish('pasta/data/wyparzacz', "dane wysylamy", 0, False)
+        mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
         print("mieszacz zmieszał")
         self.volume = 0
 
@@ -74,7 +74,7 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
-    if topics[-1] == "control":
+    if topics[-1] == "control" or topics[1] == "control":
         parse_control(payload, mqttc, fmixer)
     elif topics[1] == "data":
         if fmixer.is_on and not fmixer.running:

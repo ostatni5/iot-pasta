@@ -1,25 +1,25 @@
-START /b python orderer.py 
+START /b python orderer.py > nul
 
 timeout 1
-START /b python fmixer.py
+START /b python fmixer.py > nul
 timeout 1
-START /b python steamer.py 
+START /b python steamer.py > nul
 timeout 1
-START /b python mixer.py 
+START /b python mixer.py > nul
 timeout 1
-START /b python pipeline.py 
+START /b python pipeline.py > nul
 timeout 1
-START /b python dryer.py 
+START /b python dryer.py > nul
 timeout 1
-START /b python belt.py 
+START /b python belt.py > nul
 timeout 1
-START /b python lift.py 
+START /b python lift.py > nul
 timeout 1
-START /b python scale.py 
+START /b python scale.py > nul
 timeout 1
-START /b python cooler.py 
+START /b python cooler.py > nul
 timeout 1
-START /b python silos.py 
+START /b python silos.py > nul
 
 timeout 1
 START python logger.py

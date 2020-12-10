@@ -6,7 +6,7 @@ import pygame
 # some_file.py
 from utilities.util import *
 
-SCREEN_X = 20 + 300 * 3
+SCREEN_X = 20 + 300 * 4
 SCREEN_Y = 30 + 330 * 1
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
@@ -34,7 +34,7 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
-    if topics[-1] == "control":
+    if topics[-1] == "control" or topics[1] == "control":
         parse_control(payload, mqttc, silos)
     elif topics[1] == "data":
         if silos.is_on:
