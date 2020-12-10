@@ -17,6 +17,10 @@ class Silos(Device):
         self.products = []
 
     def add(self, product):
+        if self.product is None:
+            self.product = product
+        else: 
+            self.product.volume += product.volume
         self.products.append(product)
         mqttc.publish('pasta/log', f"silos brrr {product}", 0, True)
         self.progress+=product.volume
