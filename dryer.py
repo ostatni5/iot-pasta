@@ -26,7 +26,7 @@ class Dryer(Device):
         self.products.insert(0, None)
         return last
 
-    def move(self):
+    def dry(self):
         self.running = True
         self.forward()
         self.running = False
@@ -66,10 +66,7 @@ mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
 
 
-start_time = time.time()
 while True:
-    if dryer.time is not None and time.time() - start_time >= dryer.time:
-        start_time = time.time()
+    if dryer.time is not None:
+        time.sleep(dryer.time)
         dryer.dry()
-    
-    time.sleep(1)
