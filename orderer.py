@@ -43,7 +43,7 @@ mqttc.loop_start()
 running_ui = True
 clock = pygame.time.Clock()
 
-counter = 0 
+counter = 0
 
 while running_ui:
     mouse = pygame.mouse.get_pos()
@@ -57,6 +57,8 @@ while running_ui:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if ui.button_on.inside(mouse[0], mouse[1]):
                 mqttc.publish('pasta/control', "on", 2, False)
+
+            if ui.button_pasta.inside(mouse[0], mouse[1]):
                 amount = 200
                 part = {
                     "id": "pasta"+str(counter),
@@ -65,14 +67,15 @@ while running_ui:
                     "volume": amount
                 }
                 json_part = dict_to_jsonstr(part)
-                mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 2, False)
-                counter+=1
+                mqttc.publish(
+                    "pasta/data/"+devicesForward["orderer"], json_part, 2, False)
+                counter += 1
 
     state = {
-        "processing": "AAAA",
-        "progres": "0%",
-        "status": "BBB",
-        "sensors": [["CCC", "DDD"]],
+        "processing": "-",
+        "progres": "-",
+        "status": "-",
+        "sensors": [["-", "-"]],
     }
 
     ui.render(state, mouse)
