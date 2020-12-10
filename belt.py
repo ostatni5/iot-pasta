@@ -49,8 +49,9 @@ class Belt(Device):
         time.sleep(self.duration)
         product = self.shift_pasta()
         # mqttc.publish() # product do nast maszyny
-        mqttc.publish('pasta/log', f"belt zbeltowal {product}", 0, True)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
+        if product is not None:
+            mqttc.publish('pasta/log', f"belt zbeltowal {product}", 0, True)
+            mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
         print("przesuniete")
 
 
