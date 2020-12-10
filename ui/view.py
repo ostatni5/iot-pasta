@@ -14,6 +14,7 @@ class View:
         self.font_small = pygame.font.SysFont(None, self.small_font_size)
         self.screen = pygame.display.set_mode([width, height])
         self.padding_left = 10
+        pygame.display.set_caption(name)
 
     def render(self, state={}, mouse =(0,0)):
         self.draw_ui(state, mouse)
