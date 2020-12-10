@@ -19,6 +19,7 @@ class Dryer(Device):
         if len(self.products) > 0:
             self.products[0].append(product)
             self.time = pastaData[product.type]["dtime"]
+            self.product = product
             return True
         else:
             return False
@@ -27,6 +28,8 @@ class Dryer(Device):
         last = self.products[-1]
         self.products.pop()
         self.products.insert(0, None)
+        if(last is None):
+            self.product = None
         return last
 
     def dry(self):

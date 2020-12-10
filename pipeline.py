@@ -16,6 +16,7 @@ class Pipeline(Device):
         super().__init__("pipeline")
         self.throughput = throughput
         self.volume = 0
+        self.part = 0
 
     def add(self, product):
         if self.volume == 0:
@@ -28,7 +29,9 @@ class Pipeline(Device):
     def push(self):
         while self.volume > 0:
             self.forward()
+            self.part += 1
         self.running = False
+        self.part = 0
     
     def forward(self):
         step = self.throughput
@@ -41,9 +44,11 @@ class Pipeline(Device):
         
         weight = self.product["weight"] * batch / self.product["volume"]
         part = {
-            "type": self.product["type"],
+            "id": self.product.id,
+            "type": self.product.type,
             "weight": weight,
-            "volume:": batch
+            "volume:": batch,
+            "part": self.part
         }
 
         json_part = dict_to_jsonstr(part)

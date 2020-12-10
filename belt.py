@@ -47,11 +47,11 @@ class Belt(Device):
 
     def move(self):
         time.sleep(self.duration)
-        product = self.shift_pasta()
+        self.product = self.shift_pasta()
         # mqttc.publish() # product do nast maszyny
-        if product is not None:
-            mqttc.publish('pasta/log', f"belt zbeltowal {product}", 0, True)
-            mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
+        if self.product is not None:
+            mqttc.publish('pasta/log', f"belt zbeltowal {self.product}", 0, True)
+            mqttc.publish('pasta/data/' + devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
         print("przesuniete")
 
 
@@ -93,8 +93,6 @@ while running_ui:
             running_ui = False
 
     belt.move()
-    belt.add(random.randint(0,33))
-    belt.alter_duration()
 
     state = {
         "processing": str(device.product),

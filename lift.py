@@ -47,13 +47,15 @@ class Lift(Device):
             self.array[0] = element
             return True
         else:
-            # TODO
             return False
 
     def move(self):
-
         time.sleep(self.duration)
-        self.shift()
+        self.product = self.shift()
+        if self.product is not None:
+            mqttc.publish('pasta/log', f"lift zliftowal {self.product}", 0, True)
+            mqttc.publish('pasta/data/' + devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
+        print("przesuniete")
         
         
 lift = Lift()

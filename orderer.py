@@ -23,6 +23,7 @@ def on_connect(client, userdata, flags, rc):
     # start subscribing to topics
     amount = 200
     part = {
+        "id": "pasta po prostu",
         "type": "Fusilli",
         "weight": pastaData["Fusilli"]["density"]*amount,
         "volume:": amount

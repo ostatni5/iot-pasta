@@ -47,7 +47,7 @@ class FMixer(Device):
 
     def forward(self):
         mqttc.publish('pasta/log', "mieszacz wstepny zmieszał", 0, True)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
+        mqttc.publish('pasta/data/' + devicesForward[self.name], obj_to_jsonstr(self.product), 0, False)
         print("mieszacz zmieszał")
         self.volume = 0
 
