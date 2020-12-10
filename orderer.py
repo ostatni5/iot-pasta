@@ -61,7 +61,7 @@ while running_ui:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if ui.button_on.inside(mouse[0], mouse[1]):
-                mqttc.publish('pasta/control', "on", 0, False)
+                mqttc.publish('pasta/control', "on", 2, False)
 
     state = {
         "processing": "AAAA",
