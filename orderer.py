@@ -2,6 +2,8 @@ import os
 from ui.controllView import ControllView
 import paho.mqtt.client as mqtt
 import pygame
+from utilities.util import *
+
 
 
 SCREEN_X = 20
@@ -17,20 +19,23 @@ ui = ControllView(NAME)
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # start subscribing to topics
-    # example mqttc.subscribe("topic/topic/topic")
+    amount = 200
+    part = {
+        "type": "Fusilli",
+        "weight": pastaData["Fusilli"]["density"]*amount,
+        "volume:": amount
+    }
+    json_part = dict_to_jsonstr(part)
     mqttc.publish("pasta/log", "orderera ozyl", 0, True)
-    mqttc.publish("pasta/mieszacz_wstepny/control", "on", 0, True)
-    mqttc.publish("pasta/data/mieszacz_wstepny",
-                  "rururkowce", 0, False)
+    mqttc.publish("pasta/control", "on", 0, True)
+    mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 0, False)
     # end subscribing to topics
-
-
+    
+                    
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
-    # check topics and do something
-    # end checking topics
 
 
 mqttc = mqtt.Client()

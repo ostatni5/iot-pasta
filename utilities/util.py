@@ -66,6 +66,7 @@ pastaData = {
 
 
 devicesForward = {
+    "orderer": "fmixer",
     "fmixer": "steamer",
     "steamer": "mixer",
     "mixer": "pipeline",
@@ -88,8 +89,11 @@ def parse_control(payload, mqttc, device):
 
 def subscribe_setup(mqttc, device):
     mqttc.publish("pasta/log", f'kontroler {device} ozyl', 0, True)
-    mqttc.subscribe(f'pasta/{device}e/control')
+    mqttc.subscribe(f'pasta/{device}/control')
+    mqttc.subscribe(f'pasta/control/{device}')
+    mqttc.subscribe(f'pasta/control')
     mqttc.subscribe(f'pasta/data/{device}')
+    
 
 
 

@@ -72,8 +72,12 @@ clock = pygame.time.Clock()
 device = dryer
 ui = device.ui
 
-while running_ui:
 
+start_time = time.time()
+while running_ui:
+    if dryer.time is not None and time.time() - start_time >= dryer.time:
+        dryer.dry()
+    
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:

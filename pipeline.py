@@ -28,10 +28,6 @@ class Pipeline(Device):
     def push(self):
         while self.volume > 0:
             self.forward()
-            
-            if stopped:
-                mqttc.publish('pasta/log', "produkcja zatrzymana na rurze", 0, False)
-                print("wyciąg rurowy wylaczony")
         self.running = False
     
     def forward(self):
@@ -85,6 +81,7 @@ running_ui = True
 clock = pygame.time.Clock()
 device = pipeline
 ui = device.ui
+
 
 while running_ui:
 

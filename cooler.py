@@ -77,7 +77,11 @@ clock = pygame.time.Clock()
 device = cooler
 ui = device.ui
 
+
+start_time = time.time()
 while running_ui:
+    if cooler.time is not None and time.time() - start_time >= cooler.time:
+        cooler.cool()
 
     for event in pygame.event.get():
 

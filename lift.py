@@ -50,12 +50,15 @@ class Lift(Device):
         self.shift()
         
         
-
+lift = Lift()
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    #mqttc.subscribe("pasta/log")
-    #mqttc.subscribe("pasta/log")
-
+    subscribe_setup(mqttc, lift.name)
+    if topics[-1] == "control":
+        parse_control(payload, mqttc, lift)
+    elif topics[1] == "data":
+        if lift.is_on and not lift.running:
+            lift.add(jsonstr_to_obj(payload))
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
@@ -63,7 +66,7 @@ def on_message(client, userdata, msg):
     payload = msg.payload.decode("utf-8")
 
 
-lift = Lift()
+
 mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
