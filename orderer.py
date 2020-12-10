@@ -29,7 +29,6 @@ def on_connect(client, userdata, flags, rc):
     }
     json_part = dict_to_jsonstr(part)
     mqttc.publish("pasta/log", "orderera ozyl", 0, True)
-    mqttc.publish("pasta/control", "on", 0, True)
     mqttc.publish("pasta/data/"+devicesForward["orderer"], json_part, 0, False)
     # end subscribing to topics
     
