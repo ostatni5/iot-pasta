@@ -1,11 +1,12 @@
 import os
-from ui.controllView import ControllView
+
 import paho.mqtt.client as mqtt
 import pygame
 
+from ui.controllView import ControllView
 
 SCREEN_X = 20
-SCREEN_Y = 30 
+SCREEN_Y = 30
 
 NAME = "Orderer"
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
@@ -14,14 +15,14 @@ pygame.init()
 
 ui = ControllView(NAME)
 
+
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     # start subscribing to topics
     # example mqttc.subscribe("topic/topic/topic")
     mqttc.publish("pasta/log", "orderera ozyl", 0, True)
-    mqttc.publish("pasta/mieszacz_wstepny/control", "on", 0, True)
-    mqttc.publish("pasta/data/mieszacz_wstepny",
-                  "rururkowce", 0, False)
+    mqttc.publish("pasta/control", "on", 0, True)
+    mqttc.publish("pasta/data/fmixer", "rururkowce", 0, False)
     # end subscribing to topics
 
 
@@ -65,6 +66,5 @@ while running_ui:
 
     ui.render(state, mouse)
     clock.tick(10)
-
 
 pygame.quit()
