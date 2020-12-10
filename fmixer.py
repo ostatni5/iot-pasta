@@ -1,7 +1,5 @@
 import time
-
 from device import Device
-from ui.view import View
 import os
 import paho.mqtt.client as mqtt
 import pygame
@@ -9,14 +7,8 @@ from utilities.util import *
 
 SCREEN_X = 20 + 300 * 1
 SCREEN_Y = 30
-SCREEN_WIDTH = 300
-SCREEN_HEIGHT = 300
-NAME = "Orderer"
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
-
 pygame.init()
-
-ui = View(NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 def getTemperature():
@@ -83,7 +75,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, fmixer.name, fmixer.is_on)
+        parse_control(payload, mqttc, fmixer.name)
     elif topics[1] == "data":
         if fmixer.is_on and not fmixer.running:
             fmixer.add(jsonstr_to_obj(payload))
@@ -101,6 +93,8 @@ mqttc.loop_start()
 
 running_ui = True
 clock = pygame.time.Clock()
+device = fmixer
+ui = device.ui
 
 while running_ui:
 
@@ -111,10 +105,10 @@ while running_ui:
             running_ui = False
 
     state = {
-        "processing": "AAA",
-        "progres": "0%",
-        "status": str(is_on),
-        "sensors": [["CCC", "DDD"]],
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [["Temp", str(getTemperature())]],
     }
 
     ui.render(state)

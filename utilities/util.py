@@ -79,12 +79,12 @@ devicesForward = {
 
 
 
-def parse_control(payload, mqttc, device, is_on):
-    if payload == "on" and not is_on:
-        is_on = True
-    elif payload == "off" and is_on:
-        is_on = False
-    mqttc.publish("pasta/log", f'{device} is {payload}', 0, True)
+def parse_control(payload, mqttc, device):
+    if payload == "on" and not device.is_on:
+        device.is_on = True
+    elif payload == "off" and device.is_on:
+        device.is_on = False
+    mqttc.publish("pasta/log", f'{device.name} is {payload}', 0, True)
 
 def subscribe_setup(mqttc, device):
     mqttc.publish("pasta/log", f'kontroler {device} ozyl', 0, True)

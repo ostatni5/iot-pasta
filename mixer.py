@@ -1,9 +1,16 @@
+import pygame
 from device import Device
 import paho.mqtt.client as mqtt
-import time, random
+import time
+import random
+import os
 # some_file.py
 from utilities.util import *
 
+SCREEN_X = 20 + 300 * 3
+SCREEN_Y = 30
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 def getPressure():
     return 2
@@ -39,7 +46,8 @@ class Mixer(Device):
             stopped = self.check_temp() or self.check_pressure()
             self.progress += 1
         if stopped:
-            mqttc.publish('pasta/log', "produkcja zatrzymana na mieszaczu", 0, False)
+            mqttc.publish(
+                'pasta/log', "produkcja zatrzymana na mieszaczu", 0, False)
             print("mieszacz wylaczony")
         else:
             self.forward()
@@ -47,7 +55,8 @@ class Mixer(Device):
 
     def forward(self):
         mqttc.publish('pasta/log', "mieszacz zmieszał", 0, True)
-        mqttc.publish('pasta/data/' + devicesForward[self.name], "dane wysylamy", 0, False)
+        mqttc.publish('pasta/data/' +
+                      devicesForward[self.name], "dane wysylamy", 0, False)
         print("mieszacz zmieszał")
         self.volume = 0
 
@@ -57,7 +66,8 @@ class Mixer(Device):
             temperature -= 5
         elif temperature > self.maxTemperature:
             print("proba wylaczenia mieszacza")
-            mqttc.publish('pasta/log', "temperatura na mieszaczu za wysoka", 0, False)
+            mqttc.publish(
+                'pasta/log', "temperatura na mieszaczu za wysoka", 0, False)
             return True
         return False
 
@@ -67,7 +77,8 @@ class Mixer(Device):
             pressure -= .10
         elif pressure > self.maxPressure:
             print("proba wylaczenia mieszacza")
-            mqttc.publish('pasta/log', "ciśnienie na mieszaczu za wysokie", 0, False)
+            mqttc.publish(
+                'pasta/log', "ciśnienie na mieszaczu za wysokie", 0, False)
             return True
         return False
 
@@ -85,7 +96,7 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, mixer.name, mixer.is_on)
+        parse_control(payload, mqttc, mixer)
     elif topics[1] == "data":
         if mixer.is_on and not mixer.running:
             mixer.add(jsonstr_to_obj(payload))
@@ -96,4 +107,31 @@ mqttc = mqtt.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
-mqttc.loop_forever()
+mqttc.loop_start()
+
+running_ui = True
+clock = pygame.time.Clock()
+
+device = mixer
+ui = device.ui
+
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [["Temp", str(getTemperature())],
+                    ["Press", str(getPressure())]],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()

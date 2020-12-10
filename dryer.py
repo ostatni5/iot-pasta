@@ -1,10 +1,13 @@
 import paho.mqtt.client as mqtt
-import time, random
+import time, random,os,pygame
 from device import Device
 # some_file.py
 from utilities.util import *
 
-
+SCREEN_X = 20 + 300 * 5
+SCREEN_Y = 30
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
+pygame.init()
 
 class Dryer(Device):
     def __init__(self, floors=3):
@@ -47,13 +50,12 @@ def on_connect(client, userdata, flags, rc):
     subscribe_setup(mqttc, dryer.name)
 
 
-
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control":
-        parse_control(payload, mqttc, dryer.name, dryer.is_on)
+        parse_control(payload, mqttc, dryer.name)
     elif topics[1] == "data":
         if dryer.is_on and not dryer.running:
             dryer.add(jsonstr_to_obj(payload))
@@ -65,8 +67,27 @@ mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 mqttc.loop_start()
 
+running_ui = True
+clock = pygame.time.Clock()
+device = dryer
+ui = device.ui
 
-while True:
-    if dryer.time is not None:
-        time.sleep(dryer.time)
-        dryer.dry()
+while running_ui:
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            mqttc.loop_stop()
+            running_ui = False
+
+    state = {
+        "processing": str(device.product),
+        "progres": str(device.progress),
+        "status": device.get_status(),
+        "sensors": [],
+    }
+
+    ui.render(state)
+    clock.tick(10)
+
+pygame.quit()
