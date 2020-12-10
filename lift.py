@@ -60,11 +60,6 @@ lift = Lift()
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     subscribe_setup(mqttc, lift.name)
-    if topics[-1] == "control":
-        parse_control(payload, mqttc, lift)
-    elif topics[1] == "data":
-        if lift.is_on and not lift.running:
-            lift.add(jsonstr_to_obj(payload))
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload.decode("utf-8")))
