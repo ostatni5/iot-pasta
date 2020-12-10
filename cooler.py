@@ -26,7 +26,7 @@ class Cooler(Device):
         self.products.insert(0, None)
         return last
 
-    def move(self):
+    def cool(self):
         self.running = True
         self.forward()
         self.running = False
@@ -69,4 +69,4 @@ mqttc.loop_start()
 while True:
     if cooler.time is not None:
         time.sleep(cooler.time)
-        cooler.dry()
+        cooler.cool()

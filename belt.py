@@ -1,6 +1,7 @@
 import random
 import time
 
+from device import Device
 import paho.mqtt.client as mqtt
 import time, random,os,pygame
 from utilities.util import *
@@ -91,7 +92,7 @@ while running_ui:
 
     belt.move()
     belt.add(random.randint(0,33))
-    belt.alterDuration()
+    belt.alter_duration()
 
     state = {
         "processing": str(device.product),
