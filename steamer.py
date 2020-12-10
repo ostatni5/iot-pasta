@@ -57,7 +57,7 @@ class Steamer(Device):
 
     def forward(self):
         mqttc.publish('pasta/log', "wyparzacz wyparzył", 0, True)
-        mqttc.publish('pasta/product/'+ devicesForward[self.name], "dane wysylamy", 0, False)
+        mqttc.publish('pasta/data/'+ devicesForward[self.name], "dane wysylamy", 0, False)
         print("wygrzane")
         self.volume = 0
 
