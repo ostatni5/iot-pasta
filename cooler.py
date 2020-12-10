@@ -13,7 +13,7 @@ pygame.init()
 
 
 class Cooler(Device):
-    def __init__(self, floors=4):
+    def __init__(self, floors=3):
         super().__init__("cooler")
         self.products = [[] for i in range(0,floors)]
         self.time = None
