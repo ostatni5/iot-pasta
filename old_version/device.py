@@ -1,4 +1,4 @@
-from ui.view import View
+from old_version.ui.view import View
 
 
 class Device:

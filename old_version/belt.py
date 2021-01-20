@@ -1,11 +1,7 @@
-from device import Device
-import random
-import time
-
-from device import Device
+from old_version.device import Device
 import paho.mqtt.client as mqtt
 import time, random,os,pygame
-from utilities.util import *
+from old_version.utilities.util import *
 
 SCREEN_X = 20 + 300 * 0
 SCREEN_Y = 30 + 330 * 1

@@ -1,10 +1,8 @@
-from time import time
 import paho.mqtt.client as mqtt
-from pygame.version import PygameVersion
-from device import Device
+from old_version.device import Device
 import pygame ,os
 # some_file.py
-from utilities.util import *
+from old_version.utilities.util import *
 
 SCREEN_X = 20 + 300 * 4
 SCREEN_Y = 30

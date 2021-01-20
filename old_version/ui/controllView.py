@@ -1,5 +1,5 @@
-from ui.button import Button
-from ui.view import View
+from old_version.ui.button import Button
+from old_version.ui.view import View
 
 
 class ControllView(View):

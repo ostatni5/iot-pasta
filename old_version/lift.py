@@ -5,8 +5,8 @@ import time
 
 import paho.mqtt.client as mqtt
 
-from device import Device
-from utilities.util import *
+from old_version.device import Device
+from old_version.utilities.util import *
 
 SCREEN_X = 20 + 300 * 1
 SCREEN_Y = 30 + 330 * 1

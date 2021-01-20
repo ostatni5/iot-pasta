@@ -1,29 +1,27 @@
-from typing import List
 import paho.mqtt.client as mqtt
 import time
-import random
+from old_version.device import Device
 import os
 import pygame
-from device import Device
 # some_file.py
-from utilities.util import *
+from old_version.utilities.util import *
 
-SCREEN_X = 20 + 300 * 5
-SCREEN_Y = 30
+SCREEN_X = 20 + 300 * 3
+SCREEN_Y = 30 + 330 * 1
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (SCREEN_X, SCREEN_Y)
 pygame.init()
 
 
-class Dryer(Device):
+class Cooler(Device):
     def __init__(self, floors=3):
-        super().__init__("dryer")
-        self.products = [[],[],[]]
+        super().__init__("cooler")
+        self.products = [[] for i in range(0,floors)]
         self.time = None
 
     def add(self, product):
         if len(self.products) > 0:
             self.products[0].append(product)
-            self.time = pastaData[product.type]["dtime"]
+            self.time = pastaData[product.type]["ctime"]
             self.product = product
             return True
         else:
@@ -35,11 +33,11 @@ class Dryer(Device):
         self.products.insert(0, [])
         return last
 
-    def dry(self):
+    def cool(self):
         self.running = True
         self.forward()
         self.running = False
-
+    
     def forward(self):
         products = self.shift()
         if len(products) >0:
@@ -47,19 +45,19 @@ class Dryer(Device):
             for p in products:
                 time.sleep(0.5)
                 self.product = p
-                mqttc.publish('pasta/log', f"dryyyy zbeltowal {p}", 0, True)
                 json_part = obj_to_jsonstr(p)
-                mqttc.publish('pasta/data/' +
-                              devicesForward[self.name], json_part, 2, False)
-            
+                mqttc.publish('pasta/log', f"cooool zimno {p}", 0, True)
+                mqttc.publish('pasta/data/' + devicesForward[self.name], json_part, 2, False)            
 
 
-dryer = Dryer()
+
+cooler = Cooler()
 
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    subscribe_setup(mqttc, dryer.name)
+    subscribe_setup(mqttc, cooler.name)
+
 
 
 def on_message(client, userdata, msg):
@@ -67,10 +65,10 @@ def on_message(client, userdata, msg):
     topics = msg.topic.split('/')
     payload = msg.payload.decode("utf-8")
     if topics[-1] == "control" or topics[1] == "control":
-        parse_control(payload, mqttc, dryer)
+        parse_control(payload, mqttc, cooler)
     elif topics[1] == "data":
-        if dryer.is_on and not dryer.running:
-            dryer.add(jsonstr_to_obj(payload))
+        if cooler.is_on and not cooler.running:
+            cooler.add(jsonstr_to_obj(payload))
 
 
 mqttc = mqtt.Client()
@@ -81,15 +79,16 @@ mqttc.loop_start()
 
 running_ui = True
 clock = pygame.time.Clock()
-device = dryer
+
+device = cooler
 ui = device.ui
 
 
 start_time = time.time()
 while running_ui:
     if len(device.products[0]) + len(device.products[1]) + len(device.products[2]) != 0:
-        if dryer.time is not None and time.time() - start_time >= dryer.time:
-            dryer.dry()        
+        if cooler.time is not None and time.time() - start_time >= cooler.time:
+            cooler.cool()        
             start_time = time.time()
     else:
         start_time = time.time()
@@ -99,6 +98,7 @@ while running_ui:
         if event.type == pygame.QUIT:
             mqttc.loop_stop()
             running_ui = False
+    
 
     state = {
         "processing": str(device.product.id if hasattr(device.product,"id") else None ),
@@ -111,3 +111,4 @@ while running_ui:
     clock.tick(10)
 
 pygame.quit()
+

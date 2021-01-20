@@ -2,10 +2,10 @@ import os
 
 import paho.mqtt.client as mqtt
 import pygame
-from utilities.util import *
+from old_version.utilities.util import *
 
 
-from ui.controllView import ControllView
+from old_version.ui.controllView import ControllView
 
 SCREEN_X = 20
 SCREEN_Y = 30
