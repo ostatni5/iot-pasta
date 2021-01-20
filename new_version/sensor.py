@@ -4,9 +4,9 @@
 # inspired by vibration sensor VVB021 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/VVB021
 
-# device statuses:
 from time import sleep
 
+# device statuses:
 DEVICE_OK = 0
 MAINTENANCE_REQUIRED = 1
 OUT_OF_SPECIFICATION = 2
@@ -57,26 +57,29 @@ class Sensor:
         self.delay = delay
         self.parameters = {
             "temperature": 0,
-            "vibration_acc": 0,
-            "vibration_vel": 0
+            "vibration_acc_RMS": 0,
+            "vibration_acc_peak": 0,
+            "vibration_vel_RMS": 0,
+            "crest": 0
         }
-        self.running = False
-
-    def run(self):
-        self.running = True
-        # TODO - wait, measure, send
-        while self.running:
-            sleep(self.delay)
-            self.measure()
-            self.send()
 
     def measure(self):
         # TODO update measuremenets somehow
         pass
 
-    def send(self):
-        # TODO wysłać dane do mastera, sposob ze strony 10
-        pass
+    def get_data(self):
+        self.measure()
+        return {
+            "v_RMS": self.parameters["vibration_vel_RMS"],
+            "scale_v_RMS": VIB_VEL_SCALE,
+            "a_peak":  self.parameters["vibration_acc_peak"],
+            "scale_a_peak": VIB_ACC_PEAK_SCALE,
+            "a_RMS": self.parameters["vibration_acc_RMS"],
+            "scale_a_RMS": VIB_ACC_RMS_SCALE,
+            "temperature": self.parameters["temperature"],
+            "scale_temperature": TEMP_SCALE,
+            "crest": self.parameters["crest"],
+            "scale_crest": CREST_SCALE,
+            "device_status": self.status
+        }
 
-    def stop(self):
-        self.running = False
