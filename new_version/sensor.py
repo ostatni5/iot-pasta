@@ -80,6 +80,7 @@ class Sensor:
             "scale_temperature": TEMP_SCALE,
             "crest": self.parameters["crest"],
             "scale_crest": CREST_SCALE,
-            "device_status": self.status
+            "device_status": self.status,
+            "device_name": self.name
         }
 
