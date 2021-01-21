@@ -1,7 +1,6 @@
 # inspired by vibration sensor VVB021 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/VVB021
-
-from time import sleep
+import math
 
 # device statuses:
 DEVICE_OK = 0
@@ -57,17 +56,23 @@ class Sensor:
             "vibration_vel_RMS": 0,
             "crest": 0
         }
+        self.time = 0
 
     def measure(self):
-        # TODO update measuremenets somehow
-        pass
+        self.time += 1
+        t = self.time
+        self.parameters["temperature"] = 20 * math.sin(t)
+        self.parameters["vibration_acc_RMS"] = 0.1 * math.cos(t)
+        self.parameters["vibration_acc_peak"] = 0.1 * math.cos(t)
+        self.parameters["vibration_vel_RMS"] = 0.1 * math.cos(t)
+        self.parameters["crest"] = self.parameters["vibration_acc_peak"] / self.parameters["vibration_acc_RMS"]
 
     def get_data(self):
         self.measure()
         return {
             "v_RMS": self.parameters["vibration_vel_RMS"],
             "scale_v_RMS": VIB_VEL_SCALE,
-            "a_peak":  self.parameters["vibration_acc_peak"],
+            "a_peak": self.parameters["vibration_acc_peak"],
             "scale_a_peak": VIB_ACC_PEAK_SCALE,
             "a_RMS": self.parameters["vibration_acc_RMS"],
             "scale_a_RMS": VIB_ACC_RMS_SCALE,
@@ -78,4 +83,3 @@ class Sensor:
             "device_status": self.status,
             "device_name": self.name
         }
-

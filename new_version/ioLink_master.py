@@ -1,10 +1,13 @@
 # inspired by IO-Link master with EtherNet/IP interface AL1322 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/AL1322
-import paho.mqtt.client as mqtt
-from datetime import datetime
 import time
+from datetime import datetime
+
+import paho.mqtt.client as mqtt
 from sensor import *
 from utils import *
+
+from new_version.sensor import Sensor
 
 IO_LINK_PORTS = 8
 
@@ -89,9 +92,9 @@ master.add_sensor(Sensor("VVB02_2"), 1)
 master.add_sensor(Sensor("VVB02_3"), 4)
 
 
-
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
+
 
 print("Master")
 mqttc = mqtt.Client()
@@ -99,4 +102,3 @@ mqttc.on_connect = on_connect
 mqttc.connect("test.mosquitto.org")
 
 master.run(mqttc)
-
