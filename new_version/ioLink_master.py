@@ -1,9 +1,10 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 # inspired by IO-Link master with EtherNet/IP interface AL1322 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/AL1322
+import paho.mqtt.client as mqtt
 from datetime import datetime
+import time
+from sensor import *
+from utils import *
 
 IO_LINK_PORTS = 8
 
@@ -40,7 +41,7 @@ class Master:
     def normalize(self, data):
         rescaled_data = {
             "sensor_name": data["device_name"],
-            "datetime": datetime.now(),
+            "datetime": str(datetime.now()),
             "status": data["device_status"],
             "temperature": data["temperature"] * data["scale_temperature"],
             "vibration_acc_RMS": data["a_RMS"] * data["scale_a_RMS"],
@@ -64,7 +65,38 @@ class Master:
     }
     '''
 
-    def send(self):
+    def send(self, mqttc):
         for index, measurement in enumerate(self.sensors_measurements):
-            # TODO mqttc.publish("pasta/master/id_mastera/id_portu", json(measurement) ...)
-            pass
+            if measurement is not None:
+                topic = 'pasta/master/' + self.name + '/' + str(index)
+                data = dict_to_jsonstr(measurement)
+                print(data)
+                mqttc.publish(topic, data, 0, False)
+
+    def run(self, mqqtc):
+        mqttc.loop_start()
+        while True:
+            time.sleep(5)
+            self.read_sensors()
+            print("sending...")
+            self.send(mqttc)
+
+
+# test
+master = Master("AL1322")
+master.add_sensor(Sensor("VVB02_1"), 0)
+master.add_sensor(Sensor("VVB02_2"), 1)
+master.add_sensor(Sensor("VVB02_3"), 4)
+
+
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+
+print("Master")
+mqttc = mqtt.Client()
+mqttc.on_connect = on_connect
+mqttc.connect("test.mosquitto.org")
+
+master.run(mqttc)
+

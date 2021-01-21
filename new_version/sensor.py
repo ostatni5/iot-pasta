@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 # inspired by vibration sensor VVB021 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/VVB021
 
@@ -50,11 +47,9 @@ NO_DATA = 32764
 
 
 class Sensor:
-    def __init__(self, name, master, delay):
+    def __init__(self, name):
         self.name = name
-        self.master = master
         self.status = DEVICE_OK
-        self.delay = delay
         self.parameters = {
             "temperature": 0,
             "vibration_acc_RMS": 0,
