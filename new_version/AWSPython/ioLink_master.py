@@ -47,11 +47,11 @@ class Master:
             "sensor_name": data["device_name"],
             "datetime": str(datetime.now()),
             "status": data["device_status"],
-            "temperature": data["temperature"] * 10 ** data["scale_temperature"],
-            "vibration_acc_RMS": data["a_RMS"] * 10 ** data["scale_a_RMS"],
-            "vibration_acc_peak": data["a_peak"] * 10 ** data["scale_a_peak"],
-            "vibration_vel_RMS": data["v_RMS"] * 10 ** data["scale_v_RMS"],
-            "crest": data["crest"] * 10 ** data["scale_crest"]
+            "temperature": round(data["temperature"] * 10 ** data["scale_temperature"], -data["scale_temperature"]),
+            "vibration_acc_RMS": round(data["a_RMS"] * 10 ** data["scale_a_RMS"], -data["scale_a_RMS"]),
+            "vibration_acc_peak": round(data["a_peak"] * 10 ** data["scale_a_peak"], -data["scale_a_peak"]),
+            "vibration_vel_RMS": round(data["v_RMS"] * 10 ** data["scale_v_RMS"], -data["scale_v_RMS"]),
+            "crest": round(data["crest"] * 10 ** data["scale_crest"], -data["scale_crest"])
         }
         return rescaled_data
 
