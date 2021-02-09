@@ -10,6 +10,7 @@ from sensor import *
 from utils import *
 
 IO_LINK_PORTS = 8
+READING_TIME = 5
 
 
 class Master:
@@ -80,7 +81,7 @@ class Master:
     def run(self, mqttc):
         # loopCount = 0
         while True:
-            time.sleep(5)
+            time.sleep(READING_TIME)
             self.read_sensors()
             print("sending...")
             self.send(mqttc)

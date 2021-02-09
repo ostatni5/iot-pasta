@@ -47,7 +47,7 @@ privateKeyPath = args.privateKeyPath
 port = args.port
 useWebsocket = args.useWebsocket
 clientId = args.clientId
-topic = args.topic
+# topic = args.topic
 
 if args.mode not in AllowedActions:
     parser.error("Unknown --mode option %s. Must be one of %s" % (args.mode, str(AllowedActions)))
