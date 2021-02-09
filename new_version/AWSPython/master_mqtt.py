@@ -10,6 +10,9 @@ import json
 from ioLink_master import *
 from sensor import *
 
+print("MQTT MASTER")
+print("================================================")
+
 AllowedActions = ['both', 'publish', 'subscribe']
 
 
@@ -101,6 +104,7 @@ master = Master("AL1322")
 master.add_sensor(Sensor("VVB02_1"), 0)
 master.add_sensor(Sensor("VVB02_2"), 1)
 master.add_sensor(Sensor("VVB02_3"), 4)
+
 
 # Publish to the same topic in a loop forever
 master.run(myAWSIoTMQTTClient)

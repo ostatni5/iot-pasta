@@ -4,6 +4,9 @@ import time
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
+print("LOGGER")
+print("================================================")
+
 AllowedActions = ['both', 'publish', 'subscribe']
 
 
@@ -86,6 +89,7 @@ myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publi
 myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
+
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()

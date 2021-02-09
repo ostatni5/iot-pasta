@@ -75,11 +75,13 @@ class Sensor:
         apeak = peak(a_f, t_s, t)
         crest = apeak / arms
 
-        self.parameters["temperature"] = random.randint(0, 40)
-        self.parameters["vibration_acc_RMS"] = arms
-        self.parameters["vibration_acc_peak"] = apeak
-        self.parameters["vibration_vel_RMS"] = vrms
-        self.parameters["crest"] = crest
+        self.parameters["temperature"] = random.randint(0, 40) * 10 ** -TEMP_SCALE
+        self.parameters["vibration_acc_RMS"] = int(arms * 10 ** -VIB_ACC_RMS_SCALE)
+        self.parameters["vibration_acc_peak"] = int(apeak * 10 ** -VIB_ACC_PEAK_SCALE)
+        self.parameters["vibration_vel_RMS"] = int(vrms * 10 ** -VIB_VEL_SCALE)
+        self.parameters["crest"] = int(crest * 10 ** -CREST_SCALE)
+
+        #print(self.parameters)
 
         # self.parameters["temperature"] = 20 * math.sin(t)
         # self.parameters["vibration_acc_RMS"] = 0.1 * math.cos(t)
