@@ -1,0 +1,7 @@
+﻿.vscode/settings.json
+__pycache__
+
+*.pem
+*.key
+*.crt
+basicPubSub.py
