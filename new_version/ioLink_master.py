@@ -1,13 +1,13 @@
 # inspired by IO-Link master with EtherNet/IP interface AL1322 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/AL1322
+
+
+import json
 import time
 from datetime import datetime
 
-import paho.mqtt.client as mqtt
 from sensor import *
 from utils import *
-
-from new_version.sensor import Sensor
 
 IO_LINK_PORTS = 8
 
@@ -71,34 +71,35 @@ class Master:
     def send(self, mqttc):
         for index, measurement in enumerate(self.sensors_measurements):
             if measurement is not None:
-                topic = 'pasta/master/' + self.name + '/' + str(index)
-                data = dict_to_jsonstr(measurement)
+                topic = 'pasta/master_' + str(1) + '/' + 'port_' + str(index)
+                print(topic)
+                data = json.dumps(measurement)
                 print(data)
-                mqttc.publish(topic, data, 0, False)
+                mqttc.publish(topic, data, 1)
 
-    def run(self, mqqtc):
-        mqttc.loop_start()
+    def run(self, mqttc):
+        # loopCount = 0
         while True:
             time.sleep(5)
             self.read_sensors()
             print("sending...")
             self.send(mqttc)
-
+            print("...done")
 
 # test
-master = Master("AL1322")
-master.add_sensor(Sensor("VVB02_1"), 0)
-master.add_sensor(Sensor("VVB02_2"), 1)
-master.add_sensor(Sensor("VVB02_3"), 4)
+# master = Master("AL1322")
+# master.add_sensor(Sensor("VVB02_1"), 0)
+# master.add_sensor(Sensor("VVB02_2"), 1)
+# master.add_sensor(Sensor("VVB02_3"), 4)
 
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-
-
-print("Master")
-mqttc = mqtt.Client()
-mqttc.on_connect = on_connect
-mqttc.connect("test.mosquitto.org")
-
-master.run(mqttc)
+# def on_connect(client, userdata, flags, rc):
+#     print("Connected with result code " + str(rc))
+#
+#
+# print("Master")
+# mqttc = mqtt.Client()
+# mqttc.on_connect = on_connect
+# mqttc.connect("test.mosquitto.org")
+#
+# master.run(mqttc)
