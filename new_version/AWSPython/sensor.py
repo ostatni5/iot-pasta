@@ -1,6 +1,9 @@
 # inspired by vibration sensor VVB021 made by ifm electronic gmbh
 # https://www.ifm.com/de/en/product/VVB021
 import math
+import random
+from utils import *
+from generator import *
 
 # device statuses:
 DEVICE_OK = 0
@@ -59,13 +62,30 @@ class Sensor:
         self.time = 0
 
     def measure(self):
-        self.time += 1
+        self.time += MEASURE_TIME
         t = self.time
-        self.parameters["temperature"] = 20 * math.sin(t)
-        self.parameters["vibration_acc_RMS"] = 0.1 * math.cos(t)
-        self.parameters["vibration_acc_peak"] = 0.1 * math.cos(t)
-        self.parameters["vibration_vel_RMS"] = 0.1 * math.cos(t)
-        self.parameters["crest"] = self.parameters["vibration_acc_peak"] / self.parameters["vibration_acc_RMS"]
+
+        s_f = s # deviation function
+        v_f = lambda x: v(s_f, x)
+        a_f = lambda x: a(v_f, x)
+
+        t_s = t-MEASURE_TIME
+        vrms = rms(v_f, t_s, t)
+        arms = rms(a_f, t_s, t)
+        apeak = peak(a_f, t_s, t)
+        crest = apeak / arms
+
+        self.parameters["temperature"] = random.randint(0, 40)
+        self.parameters["vibration_acc_RMS"] = arms
+        self.parameters["vibration_acc_peak"] = apeak
+        self.parameters["vibration_vel_RMS"] = vrms
+        self.parameters["crest"] = crest
+
+        # self.parameters["temperature"] = 20 * math.sin(t)
+        # self.parameters["vibration_acc_RMS"] = 0.1 * math.cos(t)
+        # self.parameters["vibration_acc_peak"] = 0.1 * math.cos(t)
+        # self.parameters["vibration_vel_RMS"] = 0.1 * math.cos(t)
+        # self.parameters["crest"] = self.parameters["vibration_acc_peak"] / self.parameters["vibration_acc_RMS"]
 
     def get_data(self):
         self.measure()
