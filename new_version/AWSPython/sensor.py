@@ -65,10 +65,6 @@ class Sensor:
         self.time += MEASURE_TIME
         t = self.time
 
-        s_f = s # deviation function
-        v_f = lambda x: v(s_f, x)
-        a_f = lambda x: a(v_f, x)
-
         t_s = t-MEASURE_TIME
         vrms = rms(v_f, t_s, t)
         arms = rms(a_f, t_s, t)

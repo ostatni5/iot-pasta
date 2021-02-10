@@ -80,7 +80,8 @@ class Master:
 
     def run(self, mqttc):
         # loopCount = 0
-        while True:
+        #while True:
+        for i in range(3):
             time.sleep(READING_TIME)
             self.read_sensors()
             print("sending...")

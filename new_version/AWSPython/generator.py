@@ -1,16 +1,33 @@
 import numpy as np
 
 
-def s(t):
-    return np.sin(t)
+# functions
+def s_sin(t):
+    return 0.003*np.sin(3.14*t)
 
-def s2(t):
-    return np.sin(t)+np.cos(t)
+def s_tsin(t):
+    return 0.05*0.1*(t)*np.sin(3.14*t) + 0.02*np.sin(20*t)
 
-def s3(t):
-    return t**2
+def s_logexp(t):
+    if isinstance(t, float) and t < 20:
+        return 0.003*np.sin(3.14*t)
+    return 1/(1+np.exp((-t+20)*0.01))*np.sin(4*t)
+
+def s_logexp2(t):
+    if isinstance(t, float) and t < 20:
+        return 0.003*np.sin(3.14*t)
+    elif isinstance(t, float) and t < 100:
+        return 1/(1+np.exp((-t+20)*0.01))*np.sin(4*t)
+    return 0.003*np.sin(3.14*t)
+
+def s_sin2(t):
+    return 0.0000001*np.sin(100000000*t**4)*t
+
+def s_sin2(t):
+    return 0.0003*np.sin(40*t**4)*0.001*t
 
 
+#
 def v(s, t):
     h = 0.001
     return (s(t+h) - s(t-h))/(2*h)
@@ -36,3 +53,9 @@ def peak(func, t_start, t_end):
     x = np.arange(t_start, t_end, 0.05)
     y = func(x)
     return np.max(y) - np.min(y)
+
+
+
+s_f = s_sin # deviation function
+v_f = lambda x: v(s_f, x)
+a_f = lambda x: a(v_f, x)
